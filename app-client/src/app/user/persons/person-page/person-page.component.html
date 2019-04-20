@@ -1,0 +1,26 @@
+<div class="main-fields">
+  <p>ФИО: {{fullName$ | async}}</p>
+  <p>Логин: {{login$ | async}}</p>
+  <p>Группа сотрудника: {{currentGroup$ | async}}</p>
+  <p class="currency-ru">Текущая зар. плата: {{currentSalary$ | async}}</p>
+</div>
+
+<mat-divider></mat-divider>
+
+<mat-tab-group>
+  <mat-tab label="Основное">
+    <mat-card class="mat-elevation-z4">
+      <app-person-main-tab></app-person-main-tab>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="Группы">
+    <mat-card class="mat-elevation-z4">
+      <app-person-group-tab></app-person-group-tab>
+    </mat-card>
+  </mat-tab>
+  <mat-tab label="Орг. структура">
+    <mat-card class="mat-elevation-z4">
+      <app-person-org-structure-tab></app-person-org-structure-tab>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

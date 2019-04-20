@@ -1,0 +1,49 @@
+<h3>Расчитать зар. плату сотрудника на дату</h3>
+
+<div class="dialog-main-fields">
+  <p>ФИО: {{person?.fullNameDots}}</p>
+  <p>Логин: {{person?.login}}</p>
+  <p>Группа сотрудника: {{person?.currentGroup}}</p>
+  <p class="currency-ru">Текущая зар. плата: {{person?.currentSalary}}</p>
+</div>
+
+<div>
+  <mat-form-field class="date-chooser">
+    <input matInput
+           [matDatepicker]="pickerCalcDate"
+           placeholder="На какую дату провести расчет"
+           [formControl]="calcDate">
+    <mat-datepicker-toggle matSuffix [for]="pickerCalcDate"></mat-datepicker-toggle>
+    <mat-datepicker #pickerCalcDate></mat-datepicker>
+  </mat-form-field>
+  <button mat-icon-button
+          type="button"
+          class="clear-button">
+    <mat-icon aria-label="Очистить"
+              title="Очистить"
+              class="clickable-item"
+              (click)="calcDate.reset()">clear
+    </mat-icon>
+  </button>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="result-field">
+  <p class="currency-ru">Зар. плата: {{result}}</p>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="button-container">
+  <button mat-raised-button
+          color="primary"
+          type="button"
+          [disabled]="calcDate.value === null"
+          (click)="calculate()">Расчитать
+  </button>
+  <button mat-raised-button
+          type="button"
+          (click)="onCancelClick()">Закрыть
+  </button>
+</div>

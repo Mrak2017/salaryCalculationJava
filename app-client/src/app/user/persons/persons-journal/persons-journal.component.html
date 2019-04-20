@@ -1,0 +1,89 @@
+<div class="journal-form">
+  <div class="top-panel">
+    <mat-form-field class="search-field">
+      <input matInput
+             (keyup)="applyFilter($event.target.value)"
+             placeholder="Введите фамилию для поиска...">
+    </mat-form-field>
+    <button mat-raised-button
+            color="primary"
+            (click)="calcTotalSalary()">
+      Расчет суммарной з/п
+    </button>
+  </div>
+
+  <table mat-table [dataSource]="persons$ | async" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> №</th>
+      <td mat-cell *matCellDef="let element"> {{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="login">
+      <th mat-header-cell *matHeaderCellDef> Логин</th>
+      <td mat-cell *matCellDef="let element"> {{element.login}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef> ФИО</th>
+      <td mat-cell *matCellDef="let element"> {{element.fullName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef> Дата трудоустройства</th>
+      <td mat-cell *matCellDef="let element"> {{element.startDate | date: "dd.MM.yyyy"}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentGroup">
+      <th mat-header-cell *matHeaderCellDef> Текущая должность</th>
+      <td mat-cell *matCellDef="let element"> {{element.currentGroup?.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="baseSalaryPart">
+      <th mat-header-cell *matHeaderCellDef> Базовая ставка з/п</th>
+      <td mat-cell *matCellDef="let element" class="currency-ru"> {{element.baseSalaryPart}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentSalary">
+      <th mat-header-cell *matHeaderCellDef> Уровень з/п в данный момент</th>
+      <td mat-cell *matCellDef="let element" class="currency-ru"> {{element.currentSalary}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="editColumn">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"> </th>
+      <td mat-cell *matCellDef="let element">
+        <a [routerLink]="element.id"
+           aria-label="Изменить данные сотрудника"
+           title="Изменить данные сотрудника"
+           mat-icon-button>
+          <mat-icon>edit</mat-icon>
+        </a>
+
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="calcSalaryColumn">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"> </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon aria-label="Расчет зар. платы"
+                  title="Расчет зар. платы"
+                  class="clickable-item"
+                  (click)="calcSalary(element.id)">attach_money</mat-icon>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <button mat-fab
+          color="primary"
+          class="journal-form-add-button"
+          title="Добавить сотрудника"
+          (click)="addPerson()">
+    <mat-icon aria-label="Добавить сотрудника">add</mat-icon>
+  </button>
+</div>

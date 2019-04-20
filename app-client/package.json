@@ -1,0 +1,43 @@
+{
+  "name": "SalaryCalculation",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "7.2.8",
+    "@angular/cdk": "7.3.3",
+    "@angular/common": "7.2.8",
+    "@angular/compiler": "7.2.8",
+    "@angular/core": "7.2.8",
+    "@angular/forms": "7.2.8",
+    "@angular/material": "7.3.3",
+    "@angular/material-moment-adapter": "7.3.3",
+    "@angular/platform-browser": "7.2.8",
+    "@angular/platform-browser-dynamic": "7.2.8",
+    "@angular/router": "7.2.8",
+    "core-js": "2.6.5",
+    "moment": "2.24.0",
+    "rxjs": "6.4.0",
+    "ts-jenum": "1.1.5",
+    "tslib": "1.9.3",
+    "zone.js": "0.8.29"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "0.13.5",
+    "@angular/cli": "7.3.5",
+    "@angular/compiler-cli": "7.2.8",
+    "@angular/language-service": "7.2.8",
+    "@types/node": "11.11.0",
+    "codelyzer": "4.5.0",
+    "ts-node": "8.0.3",
+    "tslint": "5.13.1",
+    "typescript": "3.2.2"
+  }
+}

@@ -1,0 +1,19 @@
+:host {
+  height: 100%;
+}
+
+mat-tab-group {
+  height: calc(100% - 155px); /** вся высота содержимого сайднава минус заголовок и таббар*/
+}
+
+mat-card {
+  margin: 5px;
+}
+
+.main-fields {
+  padding: 20px;
+}
+
+.main-fields div{
+  padding: 5px 0;
+}

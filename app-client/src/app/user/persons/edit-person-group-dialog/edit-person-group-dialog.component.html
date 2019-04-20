@@ -1,0 +1,76 @@
+<h3>{{data.title}}</h3>
+
+<form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+  <div>
+
+    <div>
+      <mat-form-field class="date-field">
+        <input matInput
+               [matDatepicker]="pickerPeriodStart"
+               formControlName="periodStart"
+               placeholder="Дата начала периода действия группы*">
+        <mat-datepicker-toggle matSuffix [for]="pickerPeriodStart"></mat-datepicker-toggle>
+        <mat-datepicker #pickerPeriodStart></mat-datepicker>
+        <mat-error *ngIf="groupForm.controls.periodStart.hasError('required')">
+          Это обязательное поле
+        </mat-error>
+      </mat-form-field>
+      <button mat-icon-button
+              type="button"
+              class="clear-button">
+        <mat-icon aria-label="Очистить"
+                  title="Очистить"
+                  class="clickable-item"
+                  (click)="groupForm.controls.periodStart.reset()">clear
+        </mat-icon>
+      </button>
+    </div>
+
+    <div>
+      <mat-form-field class="date-field">
+        <input matInput
+               [matDatepicker]="pickerPeriodEnd"
+               formControlName="periodEnd"
+               placeholder="Дата окончания периода действия группы">
+        <mat-datepicker-toggle matSuffix [for]="pickerPeriodEnd"></mat-datepicker-toggle>
+        <mat-datepicker #pickerPeriodEnd></mat-datepicker>
+      </mat-form-field>
+      <button mat-icon-button
+              type="button"
+              class="clear-button">
+        <mat-icon aria-label="Очистить"
+                  title="Очистить"
+                  class="clickable-item"
+                  (click)="groupForm.controls.periodEnd.reset()">clear
+        </mat-icon>
+      </button>
+    </div>
+
+    <mat-form-field>
+      <mat-select placeholder="Группа сотрудника*" formControlName="groupType">
+        <mat-option *ngFor="let item of groupTypes" [value]="item">
+          {{item.name}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="groupForm.controls.groupType.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+    </mat-form-field>
+
+    <mat-error *ngIf="error.isError">
+      {{ error.errorMessage }}
+    </mat-error>
+
+  </div>
+  <div class="button-container">
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!groupForm.valid || error.isError">Сохранить
+    </button>
+    <button mat-raised-button
+            type="button"
+            (click)="onCancelClick()">Закрыть
+    </button>
+  </div>
+</form>
+

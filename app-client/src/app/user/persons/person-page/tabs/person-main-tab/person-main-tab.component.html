@@ -1,0 +1,73 @@
+<form [formGroup]="personForm" (ngSubmit)="onSubmit()">
+  <div>
+    <mat-form-field>
+      <input matInput placeholder="Пароль*" formControlName="password">
+      <mat-error *ngIf="personForm.controls.password.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.password.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Фамилия*" formControlName="lastName">
+      <mat-error *ngIf="personForm.controls.lastName.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.lastName.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Имя*" formControlName="firstName">
+      <mat-error *ngIf="personForm.controls.firstName.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.firstName.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Отчество" formControlName="middleName">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             [matDatepicker]="startDatePicker"
+             formControlName="startDate"
+             placeholder="Дата устройства на работу*">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-error *ngIf="personForm.controls.startDate.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             [matDatepicker]="endDatePicker"
+             formControlName="endDate"
+             placeholder="Дата увольнения">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             type="number"
+             placeholder="Базовая ставка з/п, рубли"
+             formControlName="baseSalaryPart">
+    </mat-form-field>
+
+  </div>
+  <div class="button-container">
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!personForm.valid">Сохранить
+    </button>
+  </div>
+
+</form>

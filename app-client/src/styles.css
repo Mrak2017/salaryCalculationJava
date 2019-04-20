@@ -1,0 +1,47 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import './assets/css/normalize.css';
+@import './assets/css/material-fixes.css';
+
+body {
+  height: 100vh;
+  min-width: 500px;
+  min-height: 500px;
+}
+
+.journal-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.journal-form table {
+  width: 100%;
+}
+
+.journal-form-add-button {
+  right: 30px;
+  bottom: 30px;
+  position: fixed !important;
+}
+
+.clickable-item {
+  cursor: pointer;
+}
+
+.icon-column {
+  width: 50px;
+}
+
+.currency-ru::after {
+  content: " ₽";
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-container button{
+  margin: 0 5px;
+}

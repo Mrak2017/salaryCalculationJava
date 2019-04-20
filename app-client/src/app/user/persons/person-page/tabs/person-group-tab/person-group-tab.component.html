@@ -1,0 +1,59 @@
+<div class="journal-form">
+  <table mat-table [dataSource]="groups$ | async">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Id</th>
+      <td mat-cell *matCellDef="let element"> {{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="groupType">
+      <th mat-header-cell *matHeaderCellDef> Должность</th>
+      <td mat-cell *matCellDef="let element"> {{element.group?.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="periodStart">
+      <th mat-header-cell *matHeaderCellDef> Дата начала действия</th>
+      <td mat-cell *matCellDef="let element"> {{element.periodStart | date: "dd.MM.yyyy"}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="periodEnd">
+      <th mat-header-cell *matHeaderCellDef> Дата окончания действия</th>
+      <td mat-cell *matCellDef="let element"> {{element.periodEnd | date: "dd.MM.yyyy"}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="editColumn">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"></th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon aria-label="Изменить группы"
+                  title="Изменить группы"
+                  class="clickable-item"
+                  (click)="editGroup(element.id)">edit
+        </mat-icon>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="deleteColumn" style="width: 100px">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"> </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon aria-label="Удалить группу"
+                  title="Удалить группу"
+                  class="clickable-item"
+                  (click)="deleteGroup(element)">clear</mat-icon>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <button mat-fab
+          color="primary"
+          class="journal-form-add-button"
+          title="Добавить группу"
+          (click)="addGroup()">
+    <mat-icon aria-label="Добавить группу">add</mat-icon>
+  </button>
+</div>

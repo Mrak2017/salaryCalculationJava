@@ -1,0 +1,39 @@
+<h3>{{data.title}}</h3>
+
+<form [formGroup]="configForm" (ngSubmit)="onSubmit()">
+  <div>
+
+    <mat-form-field>
+      <input matInput
+             placeholder="Код*"
+             formControlName="code">
+      <mat-error *ngIf="configForm.controls.code.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             placeholder="Значение"
+             formControlName="configValue">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             placeholder="Описание"
+             formControlName="description">
+    </mat-form-field>
+
+  </div>
+  <div class="button-container">
+    <button mat-raised-button
+            color="primary"
+            [disabled]="!configForm.valid">Сохранить
+    </button>
+    <button mat-raised-button
+            type="button"
+            (click)="onCancelClick()">Закрыть
+    </button>
+  </div>
+</form>
+

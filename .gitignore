@@ -2,3 +2,4 @@
 /.gradle
 /.idea
 /app-server/build
+/app-client/.gradle

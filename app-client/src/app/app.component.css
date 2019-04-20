@@ -1,0 +1,21 @@
+:host {
+  height: 100vh;
+}
+
+mat-sidenav-container {
+  height: calc(100% - 64px);
+  width: 100%;
+}
+
+mat-action-list {
+  width: 150px;
+}
+
+mat-action-list button:hover,
+mat-action-list button.selected {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+.app-menu-list-item {
+  padding-left: 10px !important;
+}

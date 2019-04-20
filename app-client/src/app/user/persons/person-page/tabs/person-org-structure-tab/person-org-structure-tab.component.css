@@ -1,0 +1,33 @@
+.logical-block {
+  padding: 30px;
+}
+.person-chooser {
+  width: 500px;
+}
+
+.selected-person-container {
+  display: flex;
+}
+
+.clear-button {
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.hierarchy-tree-invisible {
+  display: none;
+}
+
+.hierarchy-tree ul,
+.hierarchy-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.person-card-link {
+  width: auto;
+}

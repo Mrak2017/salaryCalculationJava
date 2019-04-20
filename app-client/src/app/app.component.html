@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <div>Приложение для ведения заработной платы</div>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav class="mat-elevation-z8"
+                 #sidenav
+                 mode="side"
+                 opened>
+        <mat-action-list>
+            <button *ngFor="let item of sideNavItems;"
+                    class="app-menu-list-item"
+                    [routerLinkActive]="['selected']"
+                    mat-list-item
+                    [routerLink]="item.link">{{item.name}}
+            </button>
+        </mat-action-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
