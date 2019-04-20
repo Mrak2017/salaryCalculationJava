@@ -1,0 +1,4 @@
+rootProject.name = 'salaryCalculationJava'
+
+include ':app-client'
+include ':app-server'
