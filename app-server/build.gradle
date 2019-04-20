@@ -28,12 +28,5 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.postgresql:postgresql')
 
-    //implementation project(':app-client')
     runtimeOnly project(':app-client')
-}
-
-jar.dependsOn ':app-client:build'
-
-jar {
-    from('app-client/build') { into 'resources' }
 }

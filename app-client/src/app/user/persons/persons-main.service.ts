@@ -157,7 +157,7 @@ export class PersonsMainService {
 
   private getAllPersons(search: string = null): Observable<PersonItem[]> {
     const param = CheckUtils.isExists(search) ? "?q=" + search : "";
-    return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons' + param)
+    return this.http.get<PersonItem[]>(this.restUrl() + 'get' + param)
         .pipe(
             map(data => data.map(value => new PersonItem(value))),
         )
