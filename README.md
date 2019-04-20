@@ -11,7 +11,7 @@
 
 Реализация задания на C# - https://github.com/Mrak2017/salaryCalculation
 
-####Запуск:
+#### Запуск:
 - npm i (внутри app-client)
 - gradlew bootRun
 
