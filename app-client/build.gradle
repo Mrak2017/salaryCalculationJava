@@ -34,7 +34,7 @@ npm_run_build {
     outputs.dir 'build'
 }
 
-task packageAppClient(type: Zip) {
+/*task packageAppClient(type: Zip) {
     dependsOn npm_run_build
     //baseName 'app-client'
     extension 'jar'
@@ -59,6 +59,7 @@ artifacts {
 
 clean {
     delete packageAppClient.archiveFile
-}
+}*/
 
-assemble.dependsOn packageAppClient
+//assemble.dependsOn packageAppClient
+assemble.dependsOn npm_run_build
