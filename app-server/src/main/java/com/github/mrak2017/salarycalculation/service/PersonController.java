@@ -17,8 +17,8 @@ public class PersonController {
     }
 
     public List<Person> getTestData() {
-        repository.save(createPerson("User1", "LastName1"));
-        repository.save(createPerson("User2", "LastName2"));
+        repository.save(createPerson("Иван", "Иванов"));
+        repository.save(createPerson("Петр", "Петров"));
         return repository.findAll();
     }
 

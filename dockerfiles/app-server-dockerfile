@@ -1,5 +1,0 @@
-#Official JDK8 Alpine-based image
-FROM java:openjdk-8-alpine
-COPY app-server/build/libs/app-server-0.0.1.jar /opt/app-server-0.0.1.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/opt/app-server-0.0.1.jar"]
