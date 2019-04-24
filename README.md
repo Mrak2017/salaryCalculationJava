@@ -8,6 +8,8 @@
     + Angular Material Design
     + moment.js 
 + PostgreSQL
++ docker
++ gradle
 
 Реализация задания на C# - https://github.com/Mrak2017/salaryCalculation
 
