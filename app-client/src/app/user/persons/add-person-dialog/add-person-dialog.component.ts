@@ -21,19 +21,12 @@ export class AddPersonDialogComponent implements OnInit {
 
   ngOnInit() {
     this.personForm = this.fb.group({
-      login: ['', [
-        Validators.required,
-        Validators.maxLength(Person.NAME_MAX_LENGTH)]],
-      password: ['', [
-        Validators.required,
-        Validators.maxLength(Person.NAME_MAX_LENGTH)]],
       lastName: ['', [
         Validators.required,
         Validators.maxLength(Person.NAME_MAX_LENGTH)]],
       firstName: ['', [
         Validators.required,
         Validators.maxLength(Person.NAME_MAX_LENGTH)]],
-      middleName: [''],
       startDate: ['', [Validators.required]],
       currentGroup: [GroupTypeEnum.EMPLOYEE, [Validators.required]],
       baseSalaryPart: ['', []],

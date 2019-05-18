@@ -7,14 +7,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class PersonJournalDTO {
+
 	public Long id;
-	public String login;
 	public String firstName;
 	public String lastName;
 	public LocalDate startDate;
 	public GroupType currentGroup;
 	public BigDecimal baseSalaryPart;
 	public BigDecimal currentSalary;
+
+	public PersonJournalDTO() {
+
+	}
 
 	public PersonJournalDTO(Person person, GroupType group, BigDecimal salary) {
 		id = person.getId();

@@ -1,14 +1,15 @@
 package com.github.mrak2017.salarycalculation.controller;
 
+import com.github.mrak2017.salarycalculation.controller.dto.OrgStructureItemDTO;
+import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
+import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
+import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,7 +23,7 @@ public class PersonRestController {
 	private PersonController controller;
 
 	@GetMapping("journal")
-	List<PersonJournalDTO> getForJournal(@RequestParam(required=false) String q) {
+	List<PersonJournalDTO> getForJournal(@RequestParam(required = false) String q) {
 		String search = q != null ? q : "";
 		return controller.findAll(search)
 					   .stream()
@@ -30,9 +31,32 @@ public class PersonRestController {
 					   .collect(Collectors.toList());
 	}
 
-	private PersonJournalDTO fillJournalDTO(Person person) {
-		GroupType group = controller.getCurrentGroup(person);
+	@PostMapping()
+	void addPerson(@RequestBody PersonJournalDTO dto) {
+		controller.create(dto);
+	}
+
+	@GetMapping("{id}")
+	PersonDTO getPerson(@PathVariable long id) {
+		Person person = controller.find(id).orElseThrow(ResourceNotFoundException::new);
+		List<Person2Group> groups = controller.getAllGroups(person);
+		Person chief = controller.getCurrentChief(person).orElse(null);
 		BigDecimal salary = controller.getCurrentSalary(person);
-		return new PersonJournalDTO(person, group, salary);
+		OrgStructureItemDTO hierarchy = getChildrenOrgStructureDTO(person);
+		return new PersonDTO(person, groups, chief, salary, hierarchy);
+	}
+
+	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {
+		List<OrgStructureItemDTO> children = controller.getFirstLevelSubordinates(person)
+													 .stream()
+													 .map(this::getChildrenOrgStructureDTO)
+													 .collect(Collectors.toList());
+		return new OrgStructureItemDTO(person, children);
+	}
+
+	private PersonJournalDTO fillJournalDTO(Person person) {
+		GroupType groupType = controller.getCurrentGroupType(person).orElse(null);
+		BigDecimal salary = controller.getCurrentSalary(person);
+		return new PersonJournalDTO(person, groupType, salary);
 	}
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from "rxjs/index";
+import { Observable } from "rxjs";
 import { PersonsMainService } from "../persons-main.service";
 import { PersonItem } from "../models/person-item.model";
 
@@ -12,7 +12,6 @@ export class PersonsJournalComponent implements OnInit {
 
   displayedColumns: string[] = [
     'id',
-    'login',
     'fullName',
     'startDate',
     'currentGroup',

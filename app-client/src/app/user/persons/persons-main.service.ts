@@ -49,7 +49,7 @@ export class PersonsMainService {
         .pipe(
             filter(CheckUtils.isExists),
             map(PersonsMainService.convertToDTO),
-            switchMap(dto => this.http.post(this.restUrl() + 'AddPerson', dto)),
+            switchMap(dto => this.http.post(this.restUrl(), dto)),
             take(1))
         .toPromise()
         .then(() => this.refresh());
@@ -205,10 +205,7 @@ export class PersonsMainService {
   private static convertToDTO(person: Person) {
     return {
       id: person.id,
-      login: person.login,
-      password: person.password,
       firstName: person.firstName,
-      middleName: person.middleName,
       lastName: person.lastName,
       startDate: DateUtils.formatNoTimeZoneDayStart(person.startDate),
       endDate: CheckUtils.isExists(person.endDate) ? DateUtils.formatNoTimeZoneDayEnd(person.endDate) : null,
