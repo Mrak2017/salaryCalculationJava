@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { merge, Observable, Subject } from "rxjs/index";
+import { merge, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { filter, map, shareReplay, switchMap, take } from "rxjs/internal/operators";
 import { CheckUtils } from "../../utils/check-utils";
@@ -34,14 +34,14 @@ export class ConfigurationsMainService {
   }
 
   addConfig() {
-    this.editDialog(undefined, 'Добавить настройку', dto => this.http.post(this.restUrl() + 'AddConfig', dto));
+    this.editDialog(undefined, 'Добавить настройку', dto => this.http.post(this.restUrl(), dto));
   }
 
   editConfig(id: number) {
-    this.http.get<Configuration>(this.restUrl() + 'GetConfig/' + id)
+    this.http.get<Configuration>(this.restUrl() + id)
         .pipe(map(value => new Configuration(value)))
         .toPromise()
-        .then(conf => this.editDialog(conf, 'Изменить настройку', dto => this.http.put(this.restUrl() + 'UpdateConfig', dto)));
+        .then(conf => this.editDialog(conf, 'Изменить настройку', dto => this.http.put(this.restUrl(), dto)));
   }
 
   deleteConfig(id: number, code: string) {
@@ -96,7 +96,7 @@ export class ConfigurationsMainService {
   }
 
   private deleteConfigInternal(id: number): Observable<void> {
-    return this.http.delete<void>(this.restUrl() + 'DeleteConfig/' + id);
+    return this.http.delete<void>(this.restUrl() + id);
   }
 
   private restUrl(): string {

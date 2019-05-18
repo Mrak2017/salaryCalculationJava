@@ -1,23 +1,20 @@
 package com.github.mrak2017.salarycalculation.service;
 
+import com.github.mrak2017.salarycalculation.controller.dto.ConfigurationJournalDTO;
 import com.github.mrak2017.salarycalculation.model.configuration.Configuration;
-import com.github.mrak2017.salarycalculation.repository.ConfigurationRepository;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ConfigurationController {
+import java.util.List;
+import java.util.Optional;
 
-	private final ConfigurationRepository repository;
+public interface ConfigurationController {
 
-	ConfigurationController(ConfigurationRepository repository) {
-		this.repository = repository;
-	}
+	List<Configuration> getAll();
 
-	public void create(String code, String value, String description) {
-		Configuration conf = new Configuration();
-		conf.setCode(code);
-		conf.setValue(value);
-		conf.setDescription(description);
-		repository.save(conf);
-	}
+	Optional<Configuration> find(long id);
+
+	void create(ConfigurationJournalDTO dto);
+
+	void update(ConfigurationJournalDTO dto);
+
+	void delete(long id);
 }

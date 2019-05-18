@@ -5,3 +5,7 @@ wrapper {
     gradleVersion = '5.0'
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
+
+task restartApplication(type: Exec) {
+    commandLine 'restart.bat'
+}

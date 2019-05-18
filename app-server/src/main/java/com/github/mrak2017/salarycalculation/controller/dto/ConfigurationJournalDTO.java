@@ -13,6 +13,9 @@ public class ConfigurationJournalDTO {
 	public String value;
 	public String description;
 
+	public ConfigurationJournalDTO() {
+	}
+
 	public ConfigurationJournalDTO(Configuration configuration) {
 		id = configuration.getId();
 		insertDate = configuration.getInsertDate();

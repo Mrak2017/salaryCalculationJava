@@ -2,7 +2,6 @@ package com.github.mrak2017.salarycalculation.controller;
 
 import com.github.mrak2017.salarycalculation.controller.dto.ConfigurationJournalDTO;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
-import com.github.mrak2017.salarycalculation.repository.ConfigurationRepository;
 import com.github.mrak2017.salarycalculation.service.ConfigurationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +16,9 @@ public class ConfigurationRestController {
 	@Autowired
 	private ConfigurationController controller;
 
-	private final ConfigurationRepository repository;
-
-	ConfigurationRestController(ConfigurationRepository repository) {
-		this.repository = repository;
-	}
-
 	@GetMapping("journal")
 	List<ConfigurationJournalDTO> getForJournal() {
-		return repository.findAll()
+		return controller.getAll()
 					   .stream()
 					   .map(ConfigurationJournalDTO::new)
 					   .collect(Collectors.toList());
@@ -33,22 +26,22 @@ public class ConfigurationRestController {
 
 	@GetMapping("{id}")
 	ConfigurationJournalDTO getConfiguration(@PathVariable long id) {
-		return new ConfigurationJournalDTO(repository.findById(id)
+		return new ConfigurationJournalDTO(controller.find(id)
 												   .orElseThrow(ResourceNotFoundException::new));
 	}
 
 	@PostMapping()
 	void addConfiguration(@RequestBody ConfigurationJournalDTO dto) {
-		controller.create(dto.code, dto.value, dto.description);
+		controller.create(dto);
 	}
 
-	@PutMapping("{id}")
+	@PutMapping()
 	void updateConfiguration(@RequestBody ConfigurationJournalDTO dto) {
-		//controller.create(dto.code, dto.value, dto.description);
+		controller.update(dto);
 	}
 
 	@DeleteMapping("{id}")
 	void deleteConfiguration(@PathVariable long id) {
-		//controller.create(dto.code, dto.value, dto.description);
+		controller.delete(id);
 	}
 }
