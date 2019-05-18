@@ -1,4 +1,4 @@
-package com.github.mrak2017.salarycalculation.repository;
+package com.github.mrak2017.salarycalculation.repository.person2group;
 
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import org.springframework.data.jpa.repository.JpaRepository;

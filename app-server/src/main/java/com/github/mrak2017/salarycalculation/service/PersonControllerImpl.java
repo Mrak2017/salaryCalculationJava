@@ -4,7 +4,7 @@ import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
-import com.github.mrak2017.salarycalculation.repository.Person2GroupRepository;
+import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
