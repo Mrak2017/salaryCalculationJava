@@ -33,6 +33,11 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
+	public List<Person> findAll(String search) {
+		return repository.findByLastNameContainingIgnoreCase(search);
+	}
+
+	@Override
 	public GroupType getCurrentGroup(Person person) {
 		return GroupType.Employee;
 	}
