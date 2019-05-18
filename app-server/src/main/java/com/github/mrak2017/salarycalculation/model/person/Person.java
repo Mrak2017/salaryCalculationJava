@@ -1,13 +1,20 @@
-package com.github.mrak2017.salarycalculation.model;
+package com.github.mrak2017.salarycalculation.model.person;
+
+import com.github.mrak2017.salarycalculation.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
+/**
+ * Class contains main information about employee
+ */
 @Entity
 @Table(name = "sc_person")
 public class Person extends BaseEntity {
@@ -20,19 +27,28 @@ public class Person extends BaseEntity {
     @NotNull
     private String lastName;
 
-    /** of employment*/
+    /**
+     * of employment
+     */
     @Column
     @NotNull
     private LocalDate firstDate;
 
-    /** of employment*/
+    /**
+     * of employment
+     */
     @Column
     private LocalDate lastDate;
 
-    /** per month*/
+    /**
+     * per month
+     */
     @Column
-    @Digits(integer=10, fraction=4)
+    @Digits(integer = 10, fraction = 4)
     private BigDecimal baseSalaryPart;
+
+    @OneToMany(mappedBy="person")
+    private Set<Person2Group> groups;
 
     public String getFirstName() {
         return firstName;

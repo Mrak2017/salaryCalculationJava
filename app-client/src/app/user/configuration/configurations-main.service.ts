@@ -89,7 +89,7 @@ export class ConfigurationsMainService {
   }
 
   private getAllConfigs(): Observable<ConfigurationItem[]> {
-    return this.http.get<ConfigurationItem[]>(this.restUrl() + 'AllConfigs')
+    return this.http.get<ConfigurationItem[]>(this.restUrl() + 'journal')
         .pipe(
             map(data => data.map(value => new ConfigurationItem(value))),
         )

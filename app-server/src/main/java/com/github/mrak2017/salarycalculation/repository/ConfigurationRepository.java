@@ -1,9 +1,9 @@
 package com.github.mrak2017.salarycalculation.repository;
 
-import com.github.mrak2017.salarycalculation.model.person.Person;
+import com.github.mrak2017.salarycalculation.model.configuration.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {
 }

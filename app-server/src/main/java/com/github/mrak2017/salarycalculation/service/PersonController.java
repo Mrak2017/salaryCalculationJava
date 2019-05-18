@@ -1,32 +1,42 @@
 package com.github.mrak2017.salarycalculation.service;
 
-import com.github.mrak2017.salarycalculation.model.Person;
+import com.github.mrak2017.salarycalculation.model.person.GroupType;
+import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class PersonController {
 
-    private final PersonRepository repository;
+	private final PersonRepository repository;
 
-    PersonController(PersonRepository repository) {
-        this.repository = repository;
-    }
+	PersonController(PersonRepository repository) {
+		this.repository = repository;
+	}
 
-    public List<Person> getTestData() {
-        repository.save(createPerson("Иван", "Иванов"));
-        repository.save(createPerson("Петр", "Петров"));
-        return repository.findAll();
-    }
+	public List<Person> getTestData() {
+		repository.save(createPerson("Иван", "Иванов"));
+		repository.save(createPerson("Петр", "Петров"));
+		return repository.findAll();
+	}
 
-    public Person createPerson(String firstName, String lastName) {
-        Person person = new Person();
-        person.setFirstName(firstName);
-        person.setLastName(lastName);
-        person.setFirstDate(LocalDate.now());
-        return person;
-    }
+	private Person createPerson(String firstName, String lastName) {
+		Person person = new Person();
+		person.setFirstName(firstName);
+		person.setLastName(lastName);
+		person.setFirstDate(LocalDate.now());
+		return person;
+	}
+
+	public GroupType getCurrentGroup(Person person) {
+		return GroupType.Employee;
+	}
+
+	public BigDecimal getCurrentSalary(Person person) {
+		return BigDecimal.ZERO;
+	}
 }

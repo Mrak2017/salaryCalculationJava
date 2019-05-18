@@ -1,6 +1,6 @@
 package com.github.mrak2017.salarycalculation;
 
-import com.github.mrak2017.salarycalculation.model.Person;
+import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -14,18 +14,18 @@ import java.util.List;
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
-    @Autowired
-    PersonController controller;
+	@Autowired
+	PersonController controller;
 
-    public static void main(String args[]) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static void main(String args[]) {
+		SpringApplication.run(Application.class, args);
+	}
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void test() {
+	@EventListener(ApplicationReadyEvent.class)
+	public void test() {
         /*List<Person> data = controller.getTestData();
         for (Person person : data) {
             System.out.println(String.format("firstName: %s lastName: %s", person.getFirstName(), person.getLastName()));
         }*/
-    }
+	}
 }
