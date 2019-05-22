@@ -1,6 +1,7 @@
 # Приложение для ведения заработной платы (на Java)
 + Java 8
     + Spring Boot
+    + Spring Data
     + Embeded Tomcat
     + Hibernate
 + Angular v7 
@@ -15,5 +16,10 @@
 
 #### Запуск:
 - npm i (внутри app-client)
-- gradlew bootRun
+- docker compose up -d
 
+#### Dev-запуск:
+- gradlew app-server:build
+- ng build --watch
+- docker-compose up -d
+- docker-compose stop 

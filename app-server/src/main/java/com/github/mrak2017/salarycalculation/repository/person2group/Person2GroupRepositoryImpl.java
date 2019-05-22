@@ -2,10 +2,9 @@ package com.github.mrak2017.salarycalculation.repository.person2group;
 
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom {
 
-	@Autowired
+	@PersistenceContext
 	private EntityManager em;
 
 	@Override
@@ -37,6 +36,10 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 
 		query.where(predicates.toArray(new Predicate[0]));
 		query.orderBy(cb.desc(root.get("id")));
-		return Optional.ofNullable(em.createQuery(query).getResultList().get(0));
+		List<Person2Group> list = em.createQuery(query)
+										  .setFirstResult(0)
+										  .setMaxResults(1)
+										  .getResultList();
+		return list.size() > 0 ? Optional.of(list.get(0)) : Optional.empty();
 	}
 }
