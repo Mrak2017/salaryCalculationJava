@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.controller;
 
+import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.OrgStructureItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
@@ -44,6 +45,14 @@ public class PersonRestController {
 		BigDecimal salary = controller.getCurrentSalary(person);
 		OrgStructureItemDTO hierarchy = getChildrenOrgStructureDTO(person);
 		return new PersonDTO(person, groups, chief, salary, hierarchy);
+	}
+
+	@GetMapping("get-possible-chiefs")
+	List<ComboboxItemDTO> getPossibleChiefs() {
+		return controller.getPossibleChiefs()
+					   .stream()
+					   .map(ComboboxItemDTO::new)
+					   .collect(Collectors.toList());
 	}
 
 	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {

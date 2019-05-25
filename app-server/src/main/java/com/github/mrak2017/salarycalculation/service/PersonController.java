@@ -26,4 +26,6 @@ public interface PersonController {
 	List<Person2Group> getAllGroups(Person person);
 
 	Optional<Person> getCurrentChief(Person person);
+
+	List<Person> getPossibleChiefs();
 }

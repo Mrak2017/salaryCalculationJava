@@ -66,6 +66,10 @@ public class Person extends BaseEntity {
         this.lastName = lastName;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
     public LocalDate getFirstDate() {
         return firstDate;
     }

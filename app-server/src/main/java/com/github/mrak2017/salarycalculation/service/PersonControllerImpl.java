@@ -4,12 +4,13 @@ import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
-import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.repository.PersonRepository;
+import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,12 +75,18 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public List<Person2Group> getAllGroups(Person person) {
-		//TODO
-		return null;
+		return groupRepository.findByPersonByOrderByPeriodStartAsc(person);
 	}
 
 	@Override
 	public Optional<Person> getCurrentChief(Person person) {
+		//TODO
 		return Optional.empty();
+	}
+
+	@Override
+	public List<Person> getPossibleChiefs() {
+		//TODO
+		return Collections.emptyList();
 	}
 }

@@ -56,7 +56,7 @@ export class PersonsMainService {
   }
 
   getPerson(id: number): Observable<Person> {
-    return this.http.get<Person>(this.restUrl() + 'GetPerson/' + id)
+    return this.http.get<Person>(this.restUrl() + id)
         .pipe(
             map(data => new Person(data)),
         );
