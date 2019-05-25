@@ -7,43 +7,46 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ * Superclass for all stored entities
+ */
 @MappedSuperclass
 public class BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@NotNull
+	private Long id;
 
-    @Column
-    @CreationTimestamp
-    private LocalDateTime insertDate;
+	@Column
+	@CreationTimestamp
+	private LocalDateTime insertDate;
 
-    @Column
-    @UpdateTimestamp
-    private LocalDateTime updateDate;
+	@Column
+	@UpdateTimestamp
+	private LocalDateTime updateDate;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public LocalDateTime getInsertDate() {
-        return insertDate;
-    }
+	public LocalDateTime getInsertDate() {
+		return insertDate;
+	}
 
-    public void setInsertDate(LocalDateTime insertDate) {
-        this.insertDate = insertDate;
-    }
+	public void setInsertDate(LocalDateTime insertDate) {
+		this.insertDate = insertDate;
+	}
 
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
 
-    public void setUpdateDate(LocalDateTime updateDate) {
-        this.updateDate = updateDate;
-    }
+	public void setUpdateDate(LocalDateTime updateDate) {
+		this.updateDate = updateDate;
+	}
 }

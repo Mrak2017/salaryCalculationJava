@@ -15,7 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ * Rest-service for app-client requests.
+ * Allows to get data for journal of person and filter it,
+ * have CRUD-methods for persons,
+ * can calculate salary for the whole organization, based on all employees information
+ */
 @RestController
 @RequestMapping("api/persons/")
 public class PersonRestController {

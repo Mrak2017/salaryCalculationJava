@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Rest-service for app-client requests.
+ * Allows to get data for journal of configurations, also have other CRUD-methods
+ */
 @RestController
 @RequestMapping("api/configuration/")
 public class ConfigurationRestController {

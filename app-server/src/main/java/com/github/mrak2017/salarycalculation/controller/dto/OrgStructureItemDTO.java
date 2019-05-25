@@ -4,6 +4,9 @@ import com.github.mrak2017.salarycalculation.model.person.Person;
 
 import java.util.List;
 
+/**
+ * Hierarchical DTO for tree-representation
+ */
 public class OrgStructureItemDTO {
 	public Long id;
 	public String firstName;

@@ -4,6 +4,9 @@ import com.github.mrak2017.salarycalculation.model.configuration.Configuration;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for single journal row
+ */
 public class ConfigurationJournalDTO {
 
 	public Long id;

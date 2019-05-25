@@ -2,6 +2,9 @@ package com.github.mrak2017.salarycalculation.controller.dto;
 
 import com.github.mrak2017.salarycalculation.model.person.Person;
 
+/**
+ * DTO for client combobox choosers
+ */
 public class ComboboxItemDTO {
 
 	public long id;

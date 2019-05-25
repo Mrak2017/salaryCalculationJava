@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Full DTO for person view/edit page
+ */
 public class PersonDTO {
 
 	public Long id;

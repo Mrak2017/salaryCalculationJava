@@ -6,6 +6,9 @@ import com.github.mrak2017.salarycalculation.model.person.Person;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * DTO for single journal row
+ */
 public class PersonJournalDTO {
 
 	public Long id;
