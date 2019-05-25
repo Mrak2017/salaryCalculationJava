@@ -6,6 +6,7 @@ import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import com.github.mrak2017.salarycalculation.repository.PersonRepository;
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,6 +17,9 @@ import java.util.Optional;
 
 @Service
 public class PersonControllerImpl implements PersonController {
+
+	@Autowired
+	private SalaryCalculator calculator;
 
 	private final PersonRepository repository;
 
@@ -42,8 +46,7 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public BigDecimal getCurrentSalary(Person person) {
-		//TODO
-		return BigDecimal.ZERO;
+		return calculator.getSalaryOnDate(person, LocalDate.now());
 	}
 
 	@Override
