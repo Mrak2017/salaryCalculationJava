@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface Person2GroupRepository extends JpaRepository<Person2Group, Long>, Person2GroupRepositoryCustom {
-	List<Person2Group> findByPersonByOrderByPeriodStartAsc(Person person);
+	List<Person2Group> findByPersonOrderByPeriodStartAsc(Person person);
 }

@@ -13,7 +13,7 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
-    private long id;
+    private Long id;
 
     @Column
     @CreationTimestamp
@@ -23,11 +23,11 @@ public class BaseEntity {
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

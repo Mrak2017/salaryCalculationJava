@@ -75,7 +75,7 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public List<Person2Group> getAllGroups(Person person) {
-		return groupRepository.findByPersonByOrderByPeriodStartAsc(person);
+		return groupRepository.findByPersonOrderByPeriodStartAsc(person);
 	}
 
 	@Override
