@@ -55,6 +55,15 @@ public class PersonRestController {
 					   .collect(Collectors.toList());
 	}
 
+	@GetMapping("{id}/get-possible-subordinates")
+	List<ComboboxItemDTO> getPossibleSubordinates(@PathVariable long id) {
+		Person person = controller.find(id).orElseThrow(ResourceNotFoundException::new);
+		return controller.getPossibleSubordinates(person)
+					   .stream()
+					   .map(ComboboxItemDTO::new)
+					   .collect(Collectors.toList());
+	}
+
 	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {
 		List<OrgStructureItemDTO> children = controller.getFirstLevelSubordinates(person)
 													 .stream()

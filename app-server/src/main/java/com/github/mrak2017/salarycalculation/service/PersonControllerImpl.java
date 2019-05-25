@@ -70,7 +70,7 @@ public class PersonControllerImpl implements PersonController {
 	@Override
 	public List<Person> getFirstLevelSubordinates(Person person) {
 		//TODO
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -86,6 +86,12 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public List<Person> getPossibleChiefs() {
+		//TODO
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<Person> getPossibleSubordinates(Person person) {
 		//TODO
 		return Collections.emptyList();
 	}
