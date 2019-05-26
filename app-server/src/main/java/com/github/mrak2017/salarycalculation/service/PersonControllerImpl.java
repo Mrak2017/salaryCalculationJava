@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.service;
 
+import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import com.github.mrak2017.salarycalculation.utils.CheckUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -79,7 +81,7 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
-	public Optional<Person> find(long id) {
+	public Optional<Person> find(Long id) {
 		return repository.findById(id);
 	}
 
@@ -125,12 +127,12 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
-	public Person2Group getGroupById(long id) {
+	public Person2Group getGroupById(Long id) {
 		return groupRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	@Override
-	public void deleteGroup(long id) {
+	public void deleteGroup(Long id) {
 		groupRepository.deleteById(id);
 	}
 
@@ -143,5 +145,41 @@ public class PersonControllerImpl implements PersonController {
 		person.setLastDate(dto.endDate);
 		person.setBaseSalaryPart(dto.baseSalaryPart);
 		repository.save(person);
+	}
+
+	@Override
+	public void addGroup(Long id, Person2GroupDTO dto) {
+		Person person = find(id).orElseThrow(ResourceNotFoundException::new);
+		Person2Group group = new Person2Group();
+		group.setPerson(person);
+		group.setPeriodStart(dto.periodStart);
+		group.setPeriodEnd(dto.periodEnd);
+		group.setGroupType(dto.groupType);
+		checkGroupBeforeSave(person, group);
+		groupRepository.save(group);
+	}
+
+	@Override
+	public void updateGroup(Person2GroupDTO dto) {
+		Person2Group group = groupRepository.findById(dto.id).orElseThrow(ResourceNotFoundException::new);
+		group.setPeriodStart(dto.periodStart);
+		group.setPeriodEnd(dto.periodEnd);
+		group.setGroupType(dto.groupType);
+		checkGroupBeforeSave(group.getPerson(), group);
+		groupRepository.save(group);
+	}
+
+	private void checkGroupBeforeSave(Person person, Person2Group p2g) {
+		List<Person2Group> existingGroups = groupRepository.getExistingGroups(person, p2g);
+		if (existingGroups.size() > 0) {
+			String identifiers = existingGroups.stream()
+										 .map(Person2Group::getId)
+										 .map(String::valueOf)
+										 .collect(Collectors.joining(","));
+			String message = String.format("У сотрудника не может быть больше 1 группы за период c '%s' по '%s'." +
+												   "Список идентификаторов: %s",
+					p2g.getPeriodStart().toString(), p2g.getPeriodEnd().toString(), identifiers);
+			throw new ValidationException(message);
+		}
 	}
 }

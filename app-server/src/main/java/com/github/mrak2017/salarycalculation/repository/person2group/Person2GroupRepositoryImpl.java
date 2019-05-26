@@ -42,4 +42,26 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 										  .getResultList();
 		return list.size() > 0 ? Optional.of(list.get(0)) : Optional.empty();
 	}
+
+	@Override
+	public List<Person2Group> getExistingGroups(Person person, Person2Group p2g) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person2Group> query = cb.createQuery(Person2Group.class);
+
+		Root<Person2Group> root = query.from(Person2Group.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(cb.equal(root.get("person"), person));
+		if (p2g.getId() != null) {
+			predicates.add(cb.not(cb.equal(root.get("id"), p2g.getId())));
+		}
+		predicates.add(cb.lessThanOrEqualTo(root.get("periodStart"), p2g.getPeriodEnd()));
+		predicates.add(cb.or(
+				cb.isNull(root.get("periodEnd")),
+				cb.greaterThanOrEqualTo(root.get("periodEnd"), p2g.getPeriodStart())
+		));
+
+		query.where(predicates.toArray(new Predicate[0]));
+		return em.createQuery(query).getResultList();
+	}
 }

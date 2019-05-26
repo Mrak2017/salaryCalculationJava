@@ -71,7 +71,7 @@ public class PersonRestController {
 
 	@PostMapping("{id}/add-group")
 	void addGroup(@PathVariable long id, @RequestBody Person2GroupDTO dto) {
-		//TODO
+		controller.addGroup(id, dto);
 	}
 
 	@GetMapping("groups/{id}")
@@ -82,7 +82,7 @@ public class PersonRestController {
 
 	@PutMapping("groups")
 	void updateGroup(@RequestBody Person2GroupDTO dto) {
-		//TODO
+		controller.updateGroup(dto);
 	}
 
 	@DeleteMapping("groups/{id}")

@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.service;
 
+import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
@@ -20,7 +21,7 @@ public interface PersonController {
 
 	void create(PersonJournalDTO dto);
 
-	Optional<Person> find(long id);
+	Optional<Person> find(Long id);
 
 	List<Person> getFirstLevelSubordinates(Person person);
 
@@ -32,9 +33,13 @@ public interface PersonController {
 
 	List<Person> getPossibleSubordinates(Person person);
 
-	Person2Group getGroupById(long id);
+	Person2Group getGroupById(Long id);
 
-	void deleteGroup(long id);
+	void deleteGroup(Long id);
 
 	void updatePerson(PersonDTO dto);
+
+	void addGroup(Long id, Person2GroupDTO dto);
+
+	void updateGroup(Person2GroupDTO dto);
 }
