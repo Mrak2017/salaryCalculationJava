@@ -1,9 +1,6 @@
 package com.github.mrak2017.salarycalculation.controller;
 
-import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
-import com.github.mrak2017.salarycalculation.controller.dto.OrgStructureItemDTO;
-import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
-import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
+import com.github.mrak2017.salarycalculation.controller.dto.*;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
@@ -16,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 /**
  * Rest-service for app-client requests.
  * Allows to get data for journal of person and filter it,
@@ -53,12 +51,43 @@ public class PersonRestController {
 		return new PersonDTO(person, groups, chief, salary, hierarchy);
 	}
 
+	@PutMapping("update-main-info")
+	void updateMainInfo(@RequestBody PersonDTO dto) {
+		//TODO
+	}
+
 	@GetMapping("get-possible-chiefs")
 	List<ComboboxItemDTO> getPossibleChiefs() {
 		return controller.getPossibleChiefs()
 					   .stream()
 					   .map(ComboboxItemDTO::new)
 					   .collect(Collectors.toList());
+	}
+
+	@PutMapping("{id}/new-chief/{chiefId}")
+	void updateChief(@PathVariable long id, @PathVariable long chiefId) {
+		//TODO
+	}
+
+	@PostMapping("{id}/add-group")
+	void addGroup(@PathVariable long id, @RequestBody Person2GroupDTO dto) {
+		//TODO
+	}
+
+	@GetMapping("groups/{id}")
+	Person2GroupDTO getGroup(@PathVariable long id) {
+		Person2Group group = controller.getGroupById(id);
+		return new Person2GroupDTO(group);
+	}
+
+	@PutMapping("groups")
+	void updateGroup(@RequestBody Person2GroupDTO dto) {
+		//TODO
+	}
+
+	@DeleteMapping("groups/{id}")
+	void deleteGroup(@PathVariable long id) {
+		controller.deleteGroup(id);
 	}
 
 	@GetMapping("{id}/get-possible-subordinates")
@@ -68,6 +97,18 @@ public class PersonRestController {
 					   .stream()
 					   .map(ComboboxItemDTO::new)
 					   .collect(Collectors.toList());
+	}
+
+	@GetMapping("{id}/salary")
+	BigDecimal calcSalaryOnDate(@PathVariable long id, @RequestParam(required = false) String calcDate) {
+		//TODO
+		return BigDecimal.ZERO;
+	}
+
+	@GetMapping("total-salary")
+	BigDecimal calcTotalSalaryOnDate(@RequestParam(required = false) String calcDate) {
+		//TODO
+		return BigDecimal.ZERO;
 	}
 
 	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {

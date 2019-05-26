@@ -27,6 +27,9 @@ public class PersonDTO {
 	public PersonDTO currentChief;
 	public OrgStructureItemDTO children;
 
+	public PersonDTO() {
+	}
+
 	public PersonDTO(Person person) {
 		fillMainFields(person);
 	}

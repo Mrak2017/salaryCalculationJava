@@ -12,6 +12,9 @@ public class Person2GroupDTO {
 	public LocalDate periodStart;
 	public LocalDate periodEnd;
 
+	public Person2GroupDTO() {
+	}
+
 	public Person2GroupDTO(Person2Group group) {
 		id = group.getId();
 		groupType = group.getGroupType();

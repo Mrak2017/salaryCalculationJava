@@ -30,4 +30,8 @@ public interface PersonController {
 	List<Person> getPossibleChiefs();
 
 	List<Person> getPossibleSubordinates(Person person);
+
+	Person2Group getGroupById(long id);
+
+	void deleteGroup(long id);
 }

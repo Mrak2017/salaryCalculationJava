@@ -63,7 +63,7 @@ export class PersonsMainService {
   }
 
   updatePerson(person: Person): Observable<{}> {
-    return this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, PersonsMainService.convertToDTO(person));
+    return this.http.put(this.restUrl() + 'update-main-info', PersonsMainService.convertToDTO(person));
   }
 
   getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
@@ -74,20 +74,20 @@ export class PersonsMainService {
   }
 
   updateChief(personId: number, newChiefId: number): Observable<{}> {
-    return this.http.put(this.restUrl() + 'UpdateChief/' + personId + "/" + newChiefId, {});
+    return this.http.put(this.restUrl() + personId + "/new-chief/" + newChiefId, {});
   }
 
   addGroup(personId: number): Promise<{}> {
     return this.editGroupDialog(undefined, 'Добавить группу',
-        dto => this.http.post(this.restUrl() + personId + '/AddGroup', dto));
+        dto => this.http.post(this.restUrl() + personId + '/add-group', dto));
   }
 
   updateGroup(id: number): Promise<{}> {
-    return this.http.get<PersonGroup>(this.restUrl() + 'GetGroup/' + id)
+    return this.http.get<PersonGroup>(this.restUrl() + 'groups/' + id)
         .pipe(map(value => new PersonGroup(value)))
         .toPromise()
         .then(group => this.editGroupDialog(group, 'Изменить группу',
-            dto => this.http.put(this.restUrl() + 'UpdateGroup', dto)));
+            dto => this.http.put(this.restUrl() + 'groups', dto)));
   }
 
   deleteGroup(group: PersonGroup): Promise<void> {
@@ -189,17 +189,17 @@ export class PersonsMainService {
   }
 
   private deleteGroupInternal(id: number): Observable<void> {
-    return this.http.delete<void>(this.restUrl() + 'DeleteGroup/' + id);
+    return this.http.delete<void>(this.restUrl() + 'groups/' + id);
   }
 
   private calcSalary(id: number, calcDate: Date): Observable<number> {
     return this.http.get<number>(
-        this.restUrl() + id + '/CalcSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
+        this.restUrl() + id + '/salary?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
   }
 
   private calcTotalSalary(calcDate: Date): Observable<number> {
     return this.http.get<number>(
-        this.restUrl() + 'CalcTotalSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
+        this.restUrl() + 'total-salary?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
   }
 
   private static convertToDTO(person: Person) {
