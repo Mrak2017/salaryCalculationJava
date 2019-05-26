@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: salary
+    volumes:
+      - ./pg_db_init.sql:/docker-entrypoint-initdb.d/pg_db_init.sql
     ports:
       - 5577:5432
 

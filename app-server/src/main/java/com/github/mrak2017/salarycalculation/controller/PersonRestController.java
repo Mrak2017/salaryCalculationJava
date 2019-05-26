@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 /**
  * Rest-service for app-client requests.
@@ -72,6 +73,7 @@ public class PersonRestController {
 	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {
 		List<OrgStructureItemDTO> children = controller.getFirstLevelSubordinates(person)
 													 .stream()
+													 .filter(Objects::nonNull)
 													 .map(this::getChildrenOrgStructureDTO)
 													 .collect(Collectors.toList());
 		return new OrgStructureItemDTO(person, children);

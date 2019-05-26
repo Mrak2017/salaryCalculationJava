@@ -1,12 +1,10 @@
 package com.github.mrak2017.salarycalculation.model.person;
 
 import com.github.mrak2017.salarycalculation.model.BaseEntity;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Hierarchical structure of organization. <br/>
@@ -16,20 +14,16 @@ import java.util.Set;
 @Table(name = "sc_organization_structure")
 public class OrganizationStructure extends BaseEntity {
 
+	public static String MAT_PATH_DELIMITER = ".";
+
 	@ManyToOne
 	@JoinColumn(name = "person_id", nullable = false)
 	@NotNull
 	private Person person;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name = "parent_id")
-	private OrganizationStructure parent;
-
-	@OneToMany(mappedBy = "parent")
-	private Set<OrganizationStructure> subordinates = new HashSet<OrganizationStructure>();
-
-	/*@Column
-	private List<Long> materializedPath;*/
+	@Column(columnDefinition = "ltree")
+	@Type(type = "com.github.mrak2017.salarycalculation.model.customtypes.LTreeType")
+	private String materializedPath;
 
 	public Person getPerson() {
 		return person;
@@ -39,19 +33,11 @@ public class OrganizationStructure extends BaseEntity {
 		this.person = person;
 	}
 
-	public OrganizationStructure getParent() {
-		return parent;
-	}
-
-	public void setParent(OrganizationStructure parent) {
-		this.parent = parent;
-	}
-
-	/*public List<Long> getMaterializedPath() {
+	public String getMaterializedPath() {
 		return materializedPath;
 	}
 
-	public void setMaterializedPath(List<Long> materializedPath) {
+	public void setMaterializedPath(String materializedPath) {
 		this.materializedPath = materializedPath;
-	}*/
+	}
 }
