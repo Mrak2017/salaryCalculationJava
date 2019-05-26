@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.service;
 
+import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
@@ -34,4 +35,6 @@ public interface PersonController {
 	Person2Group getGroupById(long id);
 
 	void deleteGroup(long id);
+
+	void updatePerson(PersonDTO dto);
 }

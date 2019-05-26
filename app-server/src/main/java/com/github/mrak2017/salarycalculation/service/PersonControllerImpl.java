@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.service;
 
+import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
@@ -131,5 +132,16 @@ public class PersonControllerImpl implements PersonController {
 	@Override
 	public void deleteGroup(long id) {
 		groupRepository.deleteById(id);
+	}
+
+	@Override
+	public void updatePerson(PersonDTO dto) {
+		Person person = repository.findById(dto.id).orElseThrow(ResourceNotFoundException::new);
+		person.setFirstName(dto.firstName);
+		person.setLastName(dto.lastName);
+		person.setFirstDate(dto.startDate);
+		person.setLastDate(dto.endDate);
+		person.setBaseSalaryPart(dto.baseSalaryPart);
+		repository.save(person);
 	}
 }

@@ -23,16 +23,12 @@ export class PersonMainTabComponent extends Subscriber implements OnInit {
 
   ngOnInit() {
     this.personForm = this.fb.group({
-      password: ['', [
-        Validators.required,
-        Validators.maxLength(Person.NAME_MAX_LENGTH)]],
       lastName: ['', [
         Validators.required,
         Validators.maxLength(Person.NAME_MAX_LENGTH)]],
       firstName: ['', [
         Validators.required,
         Validators.maxLength(Person.NAME_MAX_LENGTH)]],
-      middleName: [''],
       startDate: ['', [Validators.required]],
       endDate: [''],
       baseSalaryPart: ['', []],
@@ -52,10 +48,8 @@ export class PersonMainTabComponent extends Subscriber implements OnInit {
   }
 
   private fillForm(person: Person) {
-    this.personForm.controls.password.setValue(person.password);
     this.personForm.controls.lastName.setValue(person.lastName);
     this.personForm.controls.firstName.setValue(person.firstName);
-    this.personForm.controls.middleName.setValue(person.middleName);
     this.personForm.controls.startDate.setValue(person.startDate);
     this.personForm.controls.endDate.setValue(person.endDate);
     this.personForm.controls.baseSalaryPart.setValue(person.baseSalaryPart);
@@ -63,10 +57,8 @@ export class PersonMainTabComponent extends Subscriber implements OnInit {
 
   private fillOnSave(person: Person): Person {
     let clone = Object.assign({}, person);
-    clone.password = this.personForm.value.password;
     clone.lastName = this.personForm.value.lastName;
     clone.firstName = this.personForm.value.firstName;
-    clone.middleName = this.personForm.value.middleName;
     clone.startDate = this.personForm.value.startDate;
     clone.endDate = this.personForm.value.endDate;
     clone.baseSalaryPart = this.personForm.value.baseSalaryPart;

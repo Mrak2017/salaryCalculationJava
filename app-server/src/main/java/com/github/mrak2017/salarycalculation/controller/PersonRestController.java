@@ -53,7 +53,7 @@ public class PersonRestController {
 
 	@PutMapping("update-main-info")
 	void updateMainInfo(@RequestBody PersonDTO dto) {
-		//TODO
+		controller.updatePerson(dto);
 	}
 
 	@GetMapping("get-possible-chiefs")

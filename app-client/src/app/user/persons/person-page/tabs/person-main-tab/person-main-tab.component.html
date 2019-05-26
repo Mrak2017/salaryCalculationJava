@@ -1,16 +1,6 @@
 <form [formGroup]="personForm" (ngSubmit)="onSubmit()">
   <div>
     <mat-form-field>
-      <input matInput placeholder="Пароль*" formControlName="password">
-      <mat-error *ngIf="personForm.controls.password.hasError('required')">
-        Это обязательное поле
-      </mat-error>
-      <mat-error *ngIf="personForm.controls.password.hasError('maxlength')">
-        Это поле должно быть не больше {{nameMaxLength}} символов
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
       <input matInput placeholder="Фамилия*" formControlName="lastName">
       <mat-error *ngIf="personForm.controls.lastName.hasError('required')">
         Это обязательное поле
@@ -28,10 +18,6 @@
       <mat-error *ngIf="personForm.controls.firstName.hasError('maxlength')">
         Это поле должно быть не больше {{nameMaxLength}} символов
       </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input matInput placeholder="Отчество" formControlName="middleName">
     </mat-form-field>
 
     <mat-form-field>
