@@ -1,0 +1,29 @@
+gradle jar java hello world
+https://www.petrikainulainen.net/programming/gradle/getting-started-with-gradle-our-first-java-project/
+
+spring boot postgresql hibernate
+https://dzone.com/articles/spring-boot-and-postgresql
+
+spring-5-embedded-tomcat-8-gradle-tutorial
+https://auth0.com/blog/spring-5-embedded-tomcat-8-gradle-tutorial/
+
+spring boot angular gradle
+https://ordina-jworks.github.io/architecture/2018/10/12/spring-boot-angular-gradle.html
+
+gradle java npm application
+https://dzone.com/articles/integrating-java-and-npm-builds-using-gradle
+
+docker nginx reverse proxy
+https://dev.to/domysee/setting-up-a-reverse-proxy-with-nginx-and-docker-compose-29jg
+
+docker nginx rest multiple services
+https://dzone.com/articles/configuring-nginx-to-proxy-rest-requests-across-mu
+
+spring repository custom method criteria builder
+https://www.baeldung.com/spring-data-criteria-queries
+
+postgres ltree
+https://dzone.com/articles/saving-a-tree-in-postgres-using-ltree
+
+spring gradle webmvc test
+https://reflectoring.io/spring-boot-web-controller-test/
