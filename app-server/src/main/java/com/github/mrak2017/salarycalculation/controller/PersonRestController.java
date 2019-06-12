@@ -27,12 +27,6 @@ public class PersonRestController {
 	@Autowired
 	private PersonController controller;
 
-	//private final PersonController controller;
-
-	/*PersonRestController(PersonController controller) {
-		this.controller = controller;
-	}*/
-
 	@GetMapping("journal")
 	List<PersonJournalDTO> getForJournal(@RequestParam(required = false) String q) {
 		String search = q != null ? q : "";

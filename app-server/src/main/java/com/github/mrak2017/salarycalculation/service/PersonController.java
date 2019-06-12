@@ -19,7 +19,7 @@ public interface PersonController {
 
 	BigDecimal getCurrentSalary(Person person);
 
-	void create(PersonJournalDTO dto);
+	Long create(PersonJournalDTO dto);
 
 	Optional<Person> find(Long id);
 

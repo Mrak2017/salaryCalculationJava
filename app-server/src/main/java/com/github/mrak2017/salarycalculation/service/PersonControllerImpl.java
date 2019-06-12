@@ -61,7 +61,7 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
-	public void create(PersonJournalDTO dto) {
+	public Long create(PersonJournalDTO dto) {
 		Person person = new Person();
 		person.setFirstName(dto.firstName);
 		person.setLastName(dto.lastName);
@@ -78,6 +78,8 @@ public class PersonControllerImpl implements PersonController {
 		OrganizationStructure structure = new OrganizationStructure();
 		structure.setPerson(person);
 		orgStructureRep.save(structure);
+
+		return person.getId();
 	}
 
 	@Override
