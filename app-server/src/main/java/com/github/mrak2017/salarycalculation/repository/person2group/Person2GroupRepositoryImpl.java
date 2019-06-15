@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.repository.person2group;
 
+import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +64,27 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 		));
 
 		query.where(predicates.toArray(new Predicate[0]));
+		return em.createQuery(query).getResultList();
+	}
+
+	@Override
+	public List<Person> getPossibleChiefs() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> query = cb.createQuery(Person.class);
+
+		Root<Person2Group> root = query.from(Person2Group.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		predicates.add(root.get("groupType").in( Arrays.asList(GroupType.Manager, GroupType.Salesman)));
+		predicates.add(cb.lessThanOrEqualTo(root.get("periodStart"), LocalDate.now()));
+		predicates.add(cb.or(
+				cb.isNull(root.get("periodEnd")),
+				cb.greaterThanOrEqualTo(root.get("periodEnd"), LocalDate.now())
+		));
+
+		query.where(predicates.toArray(new Predicate[0]));
+		query.distinct(true);
+		query.select(root.get("person"));
 		return em.createQuery(query).getResultList();
 	}
 }

@@ -10,6 +10,9 @@ public class ComboboxItemDTO {
 	public long id;
 	public String name;
 
+	public ComboboxItemDTO() {
+	}
+
 	public ComboboxItemDTO(Person person) {
 		id = person.getId();
 		name = person.getFullName();

@@ -11,4 +11,6 @@ public interface Person2GroupRepositoryCustom {
 	Optional<Person2Group> getPersonGroupOnDate(Person person, LocalDate onDate);
 
 	List<Person2Group> getExistingGroups(Person person, Person2Group p2g);
+
+	List<Person> getPossibleChiefs();
 }

@@ -1,6 +1,7 @@
 package com.github.mrak2017.salarycalculation.controller;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.mrak2017.salarycalculation.BaseTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
@@ -15,11 +16,9 @@ import com.github.mrak2017.salarycalculation.repository.person2group.Person2Grou
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,17 +121,15 @@ public class PersonRestControllerTest extends BaseTest {
 		Person2GroupDTO managerPastGroup = new Person2GroupDTO();
 		managerPastGroup.groupType = GroupType.Manager;
 		managerPastGroup.periodStart = LocalDate.of(2019, 1,1);
-		managerPastGroup.periodEnd = dtoManagerPast.startDate;
+		managerPastGroup.periodEnd = dtoManagerPast.startDate.minusDays(1);
 		controller.addGroup(managerPastId, managerPastGroup);
 
-		List<ComboboxItemDTO> result = (List<ComboboxItemDTO>) (Object) getResult(
-				mockMvc.perform(get(REST_PREFIX + "get-possible-chiefs").contentType("application/json"))
-						.andExpect(status().isOk()),
-				List.class);
-
+		List<ComboboxItemDTO> result = getResult(
+				get(REST_PREFIX + "get-possible-chiefs").contentType("application/json"),
+				new TypeReference<List<ComboboxItemDTO>>(){});
 		assertEquals(2, result.size());
 		List<ComboboxItemDTO> managers = result.stream()
-												.filter(dto -> dto.name.equals(dtoManagerPast.firstName + " " + dtoManagerPast.lastName))
+												.filter(dto -> dto.name.equals(dtoManager.firstName + " " + dtoManager.lastName))
 												.collect(Collectors.toList());
 		assertEquals(1, managers.size());
 

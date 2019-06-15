@@ -118,8 +118,7 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public List<Person> getPossibleChiefs() {
-		//TODO
-		return Collections.emptyList();
+		return groupRepository.getPossibleChiefs();
 	}
 
 	@Override
