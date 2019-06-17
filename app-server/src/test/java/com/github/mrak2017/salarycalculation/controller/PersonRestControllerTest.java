@@ -45,6 +45,11 @@ public class PersonRestControllerTest extends BaseTest {
 	private OrganizationStructureRepository orgStructureRepository;
 
 	@Test
+	void testGetForJournal() {
+		// TODO
+	}
+
+	@Test
 	void testAddPerson() throws Exception {
 		PersonJournalDTO dto = new PersonJournalDTO();
 		dto.firstName = getStringUUID();
@@ -78,6 +83,17 @@ public class PersonRestControllerTest extends BaseTest {
 		assertNotNull(org);
 		assertNull(org.getMaterializedPath());
 	}
+
+	@Test
+	void testGetPerson() {
+		// TODO
+	}
+
+	@Test
+	void testUpdateMainInfo() {
+		// TODO
+	}
+
 
 
 	@Test
@@ -120,17 +136,18 @@ public class PersonRestControllerTest extends BaseTest {
 
 		Person2GroupDTO managerPastGroup = new Person2GroupDTO();
 		managerPastGroup.groupType = GroupType.Manager;
-		managerPastGroup.periodStart = LocalDate.of(2019, 1,1);
+		managerPastGroup.periodStart = LocalDate.of(2019, 1, 1);
 		managerPastGroup.periodEnd = dtoManagerPast.startDate.minusDays(1);
 		controller.addGroup(managerPastId, managerPastGroup);
 
 		List<ComboboxItemDTO> result = getResult(
 				get(REST_PREFIX + "get-possible-chiefs").contentType("application/json"),
-				new TypeReference<List<ComboboxItemDTO>>(){});
+				new TypeReference<List<ComboboxItemDTO>>() {
+				});
 		assertEquals(2, result.size());
 		List<ComboboxItemDTO> managers = result.stream()
-												.filter(dto -> dto.name.equals(dtoManager.firstName + " " + dtoManager.lastName))
-												.collect(Collectors.toList());
+												 .filter(dto -> dto.name.equals(dtoManager.firstName + " " + dtoManager.lastName))
+												 .collect(Collectors.toList());
 		assertEquals(1, managers.size());
 
 		List<ComboboxItemDTO> salesmen = result.stream()
@@ -138,4 +155,40 @@ public class PersonRestControllerTest extends BaseTest {
 												 .collect(Collectors.toList());
 		assertEquals(1, salesmen.size());
 	}
+
+	@Test
+	void testUpdateChief() {
+		// TODO
+	}
+
+	@Test
+	void testAddGroup() {
+		// TODO
+	}
+
+	@Test
+	void testUpdateGroup() {
+		// TODO
+	}
+
+	@Test
+	void testDeleteGroup() {
+		// TODO
+	}
+
+	@Test
+	void testGetPossibleSubordinates() {
+		// TODO
+	}
+
+	@Test
+	void testCalcSalaryOnDate() {
+		// TODO
+	}
+
+	@Test
+	void testCalcTotalSalaryOnDate() {
+		// TODO
+	}
+
 }
