@@ -1,7 +1,6 @@
 package com.github.mrak2017.salarycalculation.controller;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.mrak2017.salarycalculation.BaseTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
@@ -14,13 +13,13 @@ import com.github.mrak2017.salarycalculation.repository.PersonRepository;
 import com.github.mrak2017.salarycalculation.repository.orgStructure.OrganizationStructureRepository;
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.service.PersonController;
+import com.github.mrak2017.salarycalculation.utils.CheckUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,9 +43,67 @@ public class PersonRestControllerTest extends BaseTest {
 	@Autowired
 	private OrganizationStructureRepository orgStructureRepository;
 
+	private Person createEmployee() {
+		PersonJournalDTO dtoEmployee = new PersonJournalDTO();
+		dtoEmployee.firstName = getStringUUID();
+		dtoEmployee.lastName = getStringUUID();
+		dtoEmployee.baseSalaryPart = new BigDecimal(100);
+		dtoEmployee.startDate = LocalDate.now();
+		dtoEmployee.currentGroup = GroupType.Employee;
+
+		Long id = controller.create(dtoEmployee);
+		Person result = controller.find(id).orElse(null);
+		assertNotNull(result);
+		return result;
+	}
+
+	private Person createManager() {
+		PersonJournalDTO dtoManager = new PersonJournalDTO();
+		dtoManager.firstName = getStringUUID();
+		dtoManager.lastName = getStringUUID();
+		dtoManager.baseSalaryPart = new BigDecimal(100);
+		dtoManager.startDate = LocalDate.now();
+		dtoManager.currentGroup = GroupType.Manager;
+
+		Long id = controller.create(dtoManager);
+		Person result = controller.find(id).orElse(null);
+		assertNotNull(result);
+		return result;
+	}
+
+	private Person createSalesman() {
+		PersonJournalDTO dtoSalesman = new PersonJournalDTO();
+		dtoSalesman.firstName = getStringUUID();
+		dtoSalesman.lastName = getStringUUID();
+		dtoSalesman.baseSalaryPart = new BigDecimal(100);
+		dtoSalesman.startDate = LocalDate.now();
+		dtoSalesman.currentGroup = GroupType.Salesman;
+
+		Long id = controller.create(dtoSalesman);
+		Person result = controller.find(id).orElse(null);
+		assertNotNull(result);
+		return result;
+	}
+
 	@Test
-	void testGetForJournal() {
-		// TODO
+	void testGetForJournal() throws Exception {
+		Person person1 = createEmployee();
+		Person person2 = createEmployee();
+		Person person3 = createEmployee();
+		Person person4 = createManager();
+		Person person5 = createSalesman();
+
+		List<PersonJournalDTO> result = getResultList(
+				get(REST_PREFIX + "journal").contentType("application/json"),
+				PersonJournalDTO.class
+		);
+
+		assertEquals(5, result.size());
+		assertTrue(CheckUtil.listContainsByFunction(result, dto -> dto.firstName.equals(person1.getFirstName())));
+		assertTrue(CheckUtil.listContainsByFunction(result, dto -> dto.firstName.equals(person2.getFirstName())));
+		assertTrue(CheckUtil.listContainsByFunction(result, dto -> dto.firstName.equals(person3.getFirstName())));
+		assertTrue(CheckUtil.listContainsByFunction(result, dto -> dto.firstName.equals(person4.getFirstName())));
+		assertTrue(CheckUtil.listContainsByFunction(result, dto -> dto.firstName.equals(person5.getFirstName())));
 	}
 
 	@Test
@@ -94,36 +151,11 @@ public class PersonRestControllerTest extends BaseTest {
 		// TODO
 	}
 
-
-
 	@Test
 	void testGetPossibleChiefs() throws Exception {
-		PersonJournalDTO dtoEmployee = new PersonJournalDTO();
-		dtoEmployee.firstName = getStringUUID();
-		dtoEmployee.lastName = getStringUUID();
-		dtoEmployee.baseSalaryPart = new BigDecimal(100);
-		dtoEmployee.startDate = LocalDate.now();
-		dtoEmployee.currentGroup = GroupType.Employee;
-
-		controller.create(dtoEmployee);
-
-		PersonJournalDTO dtoManager = new PersonJournalDTO();
-		dtoManager.firstName = getStringUUID();
-		dtoManager.lastName = getStringUUID();
-		dtoManager.baseSalaryPart = new BigDecimal(100);
-		dtoManager.startDate = LocalDate.now();
-		dtoManager.currentGroup = GroupType.Manager;
-
-		controller.create(dtoManager);
-
-		PersonJournalDTO dtoSalesman = new PersonJournalDTO();
-		dtoSalesman.firstName = getStringUUID();
-		dtoSalesman.lastName = getStringUUID();
-		dtoSalesman.baseSalaryPart = new BigDecimal(100);
-		dtoSalesman.startDate = LocalDate.now();
-		dtoSalesman.currentGroup = GroupType.Salesman;
-
-		controller.create(dtoSalesman);
+		createEmployee();
+		Person manager = createManager();
+		Person salesman = createSalesman();
 
 		PersonJournalDTO dtoManagerPast = new PersonJournalDTO();
 		dtoManagerPast.firstName = getStringUUID();
@@ -140,20 +172,17 @@ public class PersonRestControllerTest extends BaseTest {
 		managerPastGroup.periodEnd = dtoManagerPast.startDate.minusDays(1);
 		controller.addGroup(managerPastId, managerPastGroup);
 
-		List<ComboboxItemDTO> result = getResult(
+		List<ComboboxItemDTO> result = getResultList(
 				get(REST_PREFIX + "get-possible-chiefs").contentType("application/json"),
-				new TypeReference<List<ComboboxItemDTO>>() {
-				});
-		assertEquals(2, result.size());
-		List<ComboboxItemDTO> managers = result.stream()
-												 .filter(dto -> dto.name.equals(dtoManager.firstName + " " + dtoManager.lastName))
-												 .collect(Collectors.toList());
-		assertEquals(1, managers.size());
+				ComboboxItemDTO.class
+		);
 
-		List<ComboboxItemDTO> salesmen = result.stream()
-												 .filter(dto -> dto.name.equals(dtoSalesman.firstName + " " + dtoSalesman.lastName))
-												 .collect(Collectors.toList());
-		assertEquals(1, salesmen.size());
+		assertEquals(2, result.size());
+		assertTrue(CheckUtil.listContainsByFunction(result,
+				dto -> dto.name.equals(manager.getFirstName() + " " + manager.getLastName())));
+
+		assertTrue(CheckUtil.listContainsByFunction(result,
+				dto -> dto.name.equals(salesman.getFirstName() + " " + salesman.getLastName())));
 	}
 
 	@Test
