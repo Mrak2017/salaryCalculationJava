@@ -13,6 +13,9 @@ public class OrgStructureItemDTO {
 	public String lastName;
 	public List<OrgStructureItemDTO> children;
 
+	public OrgStructureItemDTO() {
+	}
+
 	public OrgStructureItemDTO(Person person, List<OrgStructureItemDTO> hierarchy) {
 		id = person.getId();
 		firstName = person.getFirstName();

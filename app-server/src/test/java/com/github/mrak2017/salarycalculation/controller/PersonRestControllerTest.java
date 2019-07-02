@@ -4,6 +4,7 @@ package com.github.mrak2017.salarycalculation.controller;
 import com.github.mrak2017.salarycalculation.BaseTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
+import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
@@ -142,8 +143,20 @@ public class PersonRestControllerTest extends BaseTest {
 	}
 
 	@Test
-	void testGetPerson() {
-		// TODO
+	void testGetPerson() throws Exception {
+		Person person= createEmployee();
+
+		PersonDTO result = getResult(
+				get(REST_PREFIX + person.getId()).contentType("application/json"),
+				PersonDTO.class
+		);
+
+		assertNotNull(result);
+		assertEquals(person.getFirstName(), result.firstName);
+		assertEquals(person.getLastName(), result.lastName);
+		assertEquals(person.getFirstDate(), result.startDate);
+		assertEquals(person.getLastDate(), result.endDate);
+		assertEquals(person.getBaseSalaryPart(), result.baseSalaryPart);
 	}
 
 	@Test
