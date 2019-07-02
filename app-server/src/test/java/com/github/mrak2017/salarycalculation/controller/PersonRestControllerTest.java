@@ -1,6 +1,7 @@
 package com.github.mrak2017.salarycalculation.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.mrak2017.salarycalculation.BaseTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
@@ -25,6 +26,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -160,8 +162,30 @@ public class PersonRestControllerTest extends BaseTest {
 	}
 
 	@Test
-	void testUpdateMainInfo() {
-		// TODO
+	void testUpdateMainInfo() throws Exception {
+		Person person = createEmployee();
+		PersonDTO dto = new PersonDTO(person);
+		dto.firstName = getStringUUID();
+		dto.lastName = getStringUUID();
+		dto.startDate = LocalDate.of(2019, 1, 1);
+		dto.endDate = LocalDate.of(2019, 12, 31);
+		dto.baseSalaryPart = new BigDecimal(999);
+
+		String content = objectMapper.writeValueAsString(dto);
+
+		mockMvc.perform(put(REST_PREFIX + "update-main-info")
+								.contentType("application/json")
+								.content(content))
+				.andExpect(status().isOk());
+
+		Person result = personRepository.findById(person.getId()).orElse(null);
+		assertNotNull(result);
+
+		assertEquals(dto.firstName, result.getFirstName());
+		assertEquals(dto.lastName, result.getLastName());
+		assertEquals(dto.startDate, result.getFirstDate());
+		assertEquals(dto.endDate, result.getLastDate());
+		assertEquals(0, result.getBaseSalaryPart().compareTo(dto.baseSalaryPart));
 	}
 
 	@Test
