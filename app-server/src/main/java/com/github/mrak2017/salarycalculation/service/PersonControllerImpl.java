@@ -149,7 +149,7 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
-	public void addGroup(Long id, Person2GroupDTO dto) {
+	public Long addGroup(Long id, Person2GroupDTO dto) {
 		Person person = find(id).orElseThrow(ResourceNotFoundException::new);
 		Person2Group group = new Person2Group();
 		group.setPerson(person);
@@ -158,6 +158,8 @@ public class PersonControllerImpl implements PersonController {
 		group.setGroupType(dto.groupType);
 		checkGroupBeforeSave(person, group);
 		groupRepository.save(group);
+
+		return group.getId();
 	}
 
 	@Override

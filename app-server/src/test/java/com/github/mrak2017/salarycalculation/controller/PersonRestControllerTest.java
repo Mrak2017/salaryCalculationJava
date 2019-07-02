@@ -1,7 +1,6 @@
 package com.github.mrak2017.salarycalculation.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.mrak2017.salarycalculation.BaseTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
@@ -16,21 +15,26 @@ import com.github.mrak2017.salarycalculation.repository.orgStructure.Organizatio
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import com.github.mrak2017.salarycalculation.utils.CheckUtil;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PersonRestControllerTest extends BaseTest {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	private static final String REST_PREFIX = "/api/persons/";
 
@@ -146,7 +150,7 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Test
 	void testGetPerson() throws Exception {
-		Person person= createEmployee();
+		Person person = createEmployee();
 
 		PersonDTO result = getResult(
 				get(REST_PREFIX + person.getId()).contentType("application/json"),
@@ -223,13 +227,74 @@ public class PersonRestControllerTest extends BaseTest {
 	}
 
 	@Test
-	void testUpdateChief() {
-		// TODO
+	void testUpdateChief() throws Exception {
+		Person employee = createEmployee();
+		Person manager = createManager();
+
+		String url = String.format("%d/new-chief/%d", employee.getId(), manager.getId());
+		mockMvc.perform(put(REST_PREFIX + url)
+								.contentType("application/json"))
+				.andExpect(status().isOk());
+
+		Person resultChief = controller.getCurrentChief(employee).orElse(null);
+		assertNotNull(resultChief);
+		assertEquals(manager.getFirstName(), resultChief.getFirstName());
+		assertEquals(manager.getLastName(), resultChief.getLastName());
 	}
 
 	@Test
-	void testAddGroup() {
-		// TODO
+	void testAddCorrectGroup() throws Exception {
+		Person employee = createEmployee();
+
+		Person2GroupDTO dto = new Person2GroupDTO();
+		dto.periodStart = LocalDate.of(2019, 1, 1);
+		dto.periodEnd = LocalDate.of(2019, 1, 31);
+		dto.groupType = GroupType.Salesman;
+
+		String content = objectMapper.writeValueAsString(dto);
+
+		String url = employee.getId() + "/add-group";
+		mockMvc.perform(post(REST_PREFIX + url)
+								.contentType("application/json")
+								.content(content))
+				.andExpect(status().isOk());
+
+		List<Person2Group> list = controller.getAllGroups(employee);
+
+		assertNotNull(list);
+		assertEquals(2, list.size());
+
+		list.sort(Comparator.comparing(Person2Group::getPeriodStart));
+
+		assertEquals(dto.groupType, list.get(0).getGroupType());
+		assertEquals(dto.periodStart, list.get(0).getPeriodStart());
+
+		assertEquals(GroupType.Employee, list.get(1).getGroupType());
+		assertEquals(LocalDate.now(), list.get(1).getPeriodStart());
+	}
+
+	@Test
+	void testGetGroup() throws Exception {
+		Person employee = createEmployee();
+
+		Person2GroupDTO dto = new Person2GroupDTO();
+		dto.periodStart = LocalDate.of(2019, 1, 1);
+		dto.periodEnd = LocalDate.of(2019, 1, 31);
+		dto.groupType = GroupType.Salesman;
+
+		Long groupId = controller.addGroup(employee.getId(), dto);
+
+		assertNotNull(groupId);
+
+		Person2GroupDTO result = getResult(
+				get(REST_PREFIX + "groups/" + groupId).contentType("application/json"),
+				Person2GroupDTO.class
+		);
+
+		assertNotNull(result);
+		assertEquals(dto.periodStart, result.periodStart);
+		assertEquals(dto.periodEnd, result.periodEnd);
+		assertEquals(dto.groupType, result.groupType);
 	}
 
 	@Test

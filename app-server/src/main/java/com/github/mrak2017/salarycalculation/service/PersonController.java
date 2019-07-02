@@ -39,7 +39,7 @@ public interface PersonController {
 
 	void updatePerson(PersonDTO dto);
 
-	void addGroup(Long id, Person2GroupDTO dto);
+	Long addGroup(Long id, Person2GroupDTO dto);
 
 	void updateGroup(Person2GroupDTO dto);
 }
