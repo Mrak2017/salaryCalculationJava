@@ -22,4 +22,9 @@
 - gradlew app-server:build
 - ng build --watch
 - docker-compose up -d
-- docker-compose stop 
+- docker-compose stop
+
+#### Запуск тестов (dev-режим):
+- docker-compose up -d test-db
+- запустить нужный тест или пачку тестов
+- docker-compose stop test-db
