@@ -6,6 +6,7 @@ import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
+import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
 import com.github.mrak2017.salarycalculation.model.person.Person;
@@ -274,16 +275,20 @@ public class PersonRestControllerTest extends BaseTest {
 	}
 
 	@Test
+	void testAddIncorrectGroup() {
+		// TODO
+	}
+
+	@Test
 	void testGetGroup() throws Exception {
 		Person employee = createEmployee();
 
 		Person2GroupDTO dto = new Person2GroupDTO();
 		dto.periodStart = LocalDate.of(2019, 1, 1);
 		dto.periodEnd = LocalDate.of(2019, 1, 31);
-		dto.groupType = GroupType.Salesman;
+		dto.groupType = GroupType.Employee;
 
 		Long groupId = controller.addGroup(employee.getId(), dto);
-
 		assertNotNull(groupId);
 
 		Person2GroupDTO result = getResult(
@@ -298,13 +303,55 @@ public class PersonRestControllerTest extends BaseTest {
 	}
 
 	@Test
-	void testUpdateGroup() {
+	void testUpdateGroupCorrect() throws Exception {
+		Person person = createEmployee();
+		Person2Group p2g = controller.getCurrentGroup(person).orElseThrow(ResourceNotFoundException::new);
+
+		Person2GroupDTO dto = new Person2GroupDTO();
+		dto.id = p2g.getId();
+		dto.periodStart = LocalDate.of(2019, 1, 1);
+		dto.periodEnd = LocalDate.of(2019, 12, 31);
+		dto.groupType = GroupType.Manager;
+
+		String content = objectMapper.writeValueAsString(dto);
+
+		mockMvc.perform(put(REST_PREFIX + "groups")
+								.contentType("application/json")
+								.content(content))
+				.andExpect(status().isOk());
+
+		Person2Group updated = controller.getGroupById(dto.id);
+
+		assertNotNull(updated);
+		assertEquals(dto.periodStart, updated.getPeriodStart());
+		assertEquals(dto.periodEnd, updated.getPeriodEnd());
+		assertEquals(dto.groupType, updated.getGroupType());
+
+		assertNotEquals(p2g.getPeriodStart(), updated.getPeriodStart());
+		assertNotEquals(p2g.getPeriodEnd(), updated.getPeriodEnd());
+		assertNotEquals(p2g.getGroupType(), updated.getGroupType());
+	}
+
+	@Test
+	void testUpdateGroupIncorrect() {
 		// TODO
 	}
 
 	@Test
-	void testDeleteGroup() {
-		// TODO
+	void testDeleteGroup() throws Exception {
+		Person person = createEmployee();
+		Person2Group p2g = controller.getCurrentGroup(person).orElseThrow(ResourceNotFoundException::new);
+
+		mockMvc.perform(delete(REST_PREFIX + "groups/" + p2g.getId())
+								.contentType("application/json"))
+				.andExpect(status().isOk());
+
+		try {
+			Person2Group deleted = controller.getGroupById(p2g.getId());
+			fail("There was no ResourceNotFoundException thrown");
+		} catch (ResourceNotFoundException ex) {
+			// Expected exception => test is ok
+		}
 	}
 
 	@Test

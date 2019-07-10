@@ -121,7 +121,9 @@ public class PersonRestController {
 	}
 
 	private PersonJournalDTO fillJournalDTO(Person person) {
-		GroupType groupType = controller.getCurrentGroupType(person).orElse(null);
+		GroupType groupType = controller.getCurrentGroup(person)
+									  .map(Person2Group::getGroupType)
+									  .orElse(null);
 		BigDecimal salary = controller.getCurrentSalary(person);
 		return new PersonJournalDTO(person, groupType, salary);
 	}

@@ -15,7 +15,7 @@ public interface PersonController {
 
 	List<Person> findAll(String search);
 
-	Optional<GroupType> getCurrentGroupType(Person person);
+	Optional<Person2Group> getCurrentGroup(Person person);
 
 	BigDecimal getCurrentSalary(Person person);
 

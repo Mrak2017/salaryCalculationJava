@@ -47,12 +47,8 @@ public class PersonControllerImpl implements PersonController {
 	}
 
 	@Override
-	public Optional<GroupType> getCurrentGroupType(Person person) {
-		Person2Group group = groupRepository.getPersonGroupOnDate(person, LocalDate.now()).orElse(null);
-		if (group != null) {
-			return Optional.of(group.getGroupType());
-		}
-		return Optional.empty();
+	public Optional<Person2Group> getCurrentGroup(Person person) {
+		return groupRepository.getPersonGroupOnDate(person, LocalDate.now());
 	}
 
 	@Override
