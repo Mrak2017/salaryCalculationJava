@@ -6,6 +6,7 @@ import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
+import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
@@ -22,6 +23,7 @@ import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -276,7 +278,23 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Test
 	void testAddIncorrectGroup() {
-		// TODO
+		Person employee = createEmployee();
+
+		Person2GroupDTO dto = new Person2GroupDTO();
+		dto.periodStart = LocalDate.of(2018, 1, 1);
+		dto.periodEnd = LocalDate.of(2030, 12, 31);
+		dto.groupType = GroupType.Salesman;
+
+		try {
+			controller.addGroup(employee.getId(), dto);
+			fail("There was no ValidationException thrown");
+		} catch (ValidationException ex) {
+			// Expected exception => test is ok
+			assertTrue(
+					ex.getMessage().contains(
+							UserErrorTemplate.MORE_THAN_ONE_GROUP_ON_DATE_RANGE.getTemplate().substring(0, 55))
+			);
+		}
 	}
 
 	@Test
@@ -334,7 +352,36 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Test
 	void testUpdateGroupIncorrect() {
-		// TODO
+		// create person with default group (from now and without end date)
+		Person person = createEmployee();
+		Person2Group p2g = controller.getCurrentGroup(person).orElseThrow(ResourceNotFoundException::new);
+
+		// add new group before default group period
+		Person2GroupDTO correctGroupDTO = new Person2GroupDTO();
+		correctGroupDTO.periodStart = LocalDate.of(2019, 1, 1);
+		correctGroupDTO.periodEnd = LocalDate.of(2019, 1, 31);
+		correctGroupDTO.groupType = GroupType.Employee;
+
+		Long groupId = controller.addGroup(person.getId(), correctGroupDTO);
+		assertNotNull(groupId);
+
+		// add another group with date range intersect
+		Person2GroupDTO incorrectGroupDTO = new Person2GroupDTO();
+		incorrectGroupDTO.id = p2g.getId();
+		incorrectGroupDTO.periodStart = LocalDate.of(2018, 1, 1);
+		incorrectGroupDTO.periodEnd = LocalDate.of(2030, 12, 31);
+		incorrectGroupDTO.groupType = GroupType.Manager;
+
+		try {
+			controller.updateGroup(incorrectGroupDTO);
+			fail("There was no ValidationException thrown");
+		} catch (ValidationException ex) {
+			// Expected exception => test is ok
+			assertTrue(
+					ex.getMessage().contains(
+							UserErrorTemplate.MORE_THAN_ONE_GROUP_ON_DATE_RANGE.getTemplate().substring(0, 55))
+			);
+		}
 	}
 
 	@Test

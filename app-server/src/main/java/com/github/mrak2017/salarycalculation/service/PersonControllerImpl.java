@@ -3,8 +3,8 @@ package com.github.mrak2017.salarycalculation.service;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
+import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
-import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
@@ -175,8 +175,7 @@ public class PersonControllerImpl implements PersonController {
 										 .map(Person2Group::getId)
 										 .map(String::valueOf)
 										 .collect(Collectors.joining(","));
-			String message = String.format("У сотрудника не может быть больше 1 группы за период c '%s' по '%s'." +
-												   "Список идентификаторов: %s",
+			String message = String.format(UserErrorTemplate.MORE_THAN_ONE_GROUP_ON_DATE_RANGE.getTemplate(),
 					p2g.getPeriodStart().toString(), p2g.getPeriodEnd().toString(), identifiers);
 			throw new ValidationException(message);
 		}
