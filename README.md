@@ -16,6 +16,7 @@
 
 #### Запуск:
 - npm i (внутри app-client)
+- ng build (//todo убрать необходимость устанавливать Angular CLI)
 - docker compose up -d
 - зайти на http://localhost:8001
 
