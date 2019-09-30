@@ -17,10 +17,12 @@
 #### Запуск:
 - npm i (внутри app-client)
 - docker compose up -d
+- зайти на http://localhost:8001
 
 #### Dev-запуск:
-- gradlew app-server:build
+- docker-compose up -d
 - ng build --watch
+- gradlew app-server:build
 - docker-compose up -d
 - docker-compose stop
 
