@@ -66,7 +66,7 @@ public class PersonRestController {
 
 	@PutMapping("{id}/new-chief/{chiefId}")
 	void updateChief(@PathVariable long id, @PathVariable long chiefId) {
-		//TODO
+		controller.updateChief(id, chiefId);
 	}
 
 	@PostMapping("{id}/add-group")

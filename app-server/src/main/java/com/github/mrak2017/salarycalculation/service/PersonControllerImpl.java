@@ -5,6 +5,7 @@ import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
+import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
@@ -26,8 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class PersonControllerImpl implements PersonController {
 
-	@Autowired
-	private SalaryCalculator calculator;
+	private final SalaryCalculator calculator;
 
 	private final PersonRepository repository;
 
@@ -35,10 +35,12 @@ public class PersonControllerImpl implements PersonController {
 
 	private final OrganizationStructureRepository orgStructureRep;
 
-	PersonControllerImpl(PersonRepository repository, Person2GroupRepository groupRepository, OrganizationStructureRepository orgStructureRep) {
+	PersonControllerImpl(PersonRepository repository, Person2GroupRepository groupRepository,
+						 OrganizationStructureRepository orgStructureRep, SalaryCalculator calculator) {
 		this.repository = repository;
 		this.groupRepository = groupRepository;
 		this.orgStructureRep = orgStructureRep;
+		this.calculator = calculator;
 	}
 
 	@Override
@@ -97,8 +99,8 @@ public class PersonControllerImpl implements PersonController {
 	private String getChildPath(OrganizationStructure structure) {
 		return structure.getMaterializedPath() != null ?
 					   String.join(OrganizationStructure.MAT_PATH_DELIMITER,
-							   structure.getMaterializedPath(), structure.getId().toString())
-					   : structure.getId().toString();
+							   structure.getMaterializedPath(), structure.getPerson().getId().toString())
+					   : structure.getPerson().getId().toString();
 	}
 
 	@Override
@@ -108,7 +110,10 @@ public class PersonControllerImpl implements PersonController {
 
 	@Override
 	public Optional<Person> getCurrentChief(Person person) {
-		//TODO
+		OrganizationStructure parentOS = orgStructureRep.findByPerson(person).getParentStructure();
+		if (parentOS != null) {
+			return Optional.of(parentOS.getPerson());
+		}
 		return Optional.empty();
 	}
 
@@ -166,6 +171,95 @@ public class PersonControllerImpl implements PersonController {
 		group.setGroupType(dto.groupType);
 		checkGroupBeforeSave(group.getPerson(), group);
 		groupRepository.save(group);
+	}
+
+	@Override
+	public void updateChief(Long id, Long chiefId) {
+		Person person = find(id).orElseThrow(ResourceNotFoundException::new);
+		if (chiefId > 0) {
+			Person chief = find(chiefId).orElseThrow(ResourceNotFoundException::new);
+			setNewChief(person, chief);
+		} else {
+			clearChief(person);
+		}
+	}
+
+	private void setNewChief(Person person, Person chief) {
+		OrganizationStructure personOS = orgStructureRep.findByPerson(person);
+		OrganizationStructure chiefOS = orgStructureRep.findByPerson(chief);
+
+		checkChiefBeforeSetNew(personOS, chiefOS);
+
+		personOS.setParentStructure(chiefOS);
+		orgStructureRep.save(personOS);
+
+		recalculateMatPathDownRecursive(personOS);
+	}
+
+	private void checkChiefBeforeSetNew(OrganizationStructure personOS, OrganizationStructure chiefOS) {
+		checkPersonInChiefHierarchy(personOS, chiefOS);
+		checkPersonHasGroup(personOS, chiefOS);
+		checkNewChiefGroupIsValid(personOS, chiefOS);
+	}
+
+	private void checkPersonInChiefHierarchy(OrganizationStructure personOS, OrganizationStructure chiefOS) {
+		if (chiefOS.getMaterializedPath() != null
+				&& chiefOS.getMaterializedPath().contains(personOS.getPerson().getId().toString())) {
+			String hierarchyContainsPersonError = String.format(
+					"Unable to set chief '%s' for person '%s'. Chief hierarchy contains person as chief.",
+					chiefOS.getPerson().getId(), personOS.getPerson().getId());
+			throw new ValidationException(hierarchyContainsPersonError);
+		}
+	}
+
+	private void checkPersonHasGroup(OrganizationStructure personOS, OrganizationStructure chiefOS) {
+		if (!getCurrentGroup(personOS.getPerson()).isPresent()) {
+			String noGroupError = String.format(
+					"Unable to set chief '%s' for person '%s'. Person must be in any group.",
+					chiefOS.getPerson().getId(), personOS.getPerson().getId());
+			throw new ValidationException(noGroupError);
+		}
+	}
+
+	private void checkNewChiefGroupIsValid(OrganizationStructure personOS, OrganizationStructure chiefOS) {
+		Optional<Person2Group> group = getCurrentGroup(chiefOS.getPerson());
+		if (!group.isPresent()
+				|| (!group.get().getGroupType().equals(GroupType.Manager)
+					&& !group.get().getGroupType().equals(GroupType.Salesman))
+		) {
+			String invalidChiefGroupError = String.format(
+					"Unable to set chief '%s' for person '%s'. Chief group must be one of '%s' or '%s'.",
+					chiefOS.getPerson().getId(), personOS.getPerson().getId(),
+					GroupType.Manager.name(), GroupType.Salesman.name());
+			throw new ValidationException(invalidChiefGroupError);
+		}
+	}
+
+	private void recalculateMatPathDownRecursive(OrganizationStructure orgStructure) {
+		OrganizationStructure parentOS = orgStructure.getParentStructure();
+		if (parentOS != null) {
+			String newMatPath = parentOS.getMaterializedPath() != null
+					? String.join(OrganizationStructure.MAT_PATH_DELIMITER, parentOS.getMaterializedPath(),
+						parentOS.getPerson().getId().toString())
+					: parentOS.getPerson().getId().toString();
+			orgStructure.setMaterializedPath(newMatPath);
+		} else {
+			orgStructure.setMaterializedPath(null);
+		}
+		orgStructureRep.save(orgStructure);
+
+		List<OrganizationStructure> firstLevel = orgStructureRep.findByParentStructure(orgStructure);
+		for (OrganizationStructure child : firstLevel) {
+			recalculateMatPathDownRecursive(child);
+		}
+	}
+
+	private void clearChief(Person person) {
+		OrganizationStructure personOS = orgStructureRep.findByPerson(person);
+		personOS.setParentStructure(null);
+		orgStructureRep.save(personOS);
+
+		recalculateMatPathDownRecursive(personOS);
 	}
 
 	private void checkGroupBeforeSave(Person person, Person2Group p2g) {

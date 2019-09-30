@@ -42,4 +42,6 @@ public interface PersonController {
 	Long addGroup(Long id, Person2GroupDTO dto);
 
 	void updateGroup(Person2GroupDTO dto);
+
+    void updateChief(Long id, Long chiefId);
 }

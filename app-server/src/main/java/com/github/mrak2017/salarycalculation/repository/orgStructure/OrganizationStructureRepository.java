@@ -13,6 +13,8 @@ import java.util.List;
 public interface OrganizationStructureRepository extends JpaRepository<OrganizationStructure, Long> {
 	OrganizationStructure findByPerson(Person person);
 
+	List<OrganizationStructure> findByParentStructure(OrganizationStructure parent);
+
 	@Query(value = "SELECT * FROM sc_organization_structure WHERE materialized_path <@ CAST(:pathToSearch AS ltree)", nativeQuery = true)
 	List<OrganizationStructure> findAllByPath(@Param("pathToSearch") String pathToSearch);
 

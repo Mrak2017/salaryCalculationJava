@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Hierarchical structure of organization. <br/>
@@ -14,30 +15,53 @@ import javax.validation.constraints.NotNull;
 @Table(name = "sc_organization_structure")
 public class OrganizationStructure extends BaseEntity {
 
-	public static String MAT_PATH_DELIMITER = ".";
+    public static final String MAT_PATH_DELIMITER = ".";
 
-	@ManyToOne
-	@JoinColumn(name = "person_id", nullable = false)
-	@NotNull
-	private Person person;
+    @ManyToOne
+    @JoinColumn(name = "person_id", nullable = false)
+    @NotNull
+    private Person person;
 
-	@Column(columnDefinition = "ltree")
-	@Type(type = "com.github.mrak2017.salarycalculation.model.customtypes.LTreeType")
-	private String materializedPath;
+    @ManyToOne
+    @JoinColumn(name = "parent_structure_id")
+    private OrganizationStructure parentStructure;
 
-	public Person getPerson() {
-		return person;
-	}
+    @OneToMany(mappedBy = "parentStructure", fetch = FetchType.LAZY)
+    private List<OrganizationStructure> subordinates;
 
-	public void setPerson(Person person) {
-		this.person = person;
-	}
+    @Column(columnDefinition = "ltree")
+    @Type(type = "com.github.mrak2017.salarycalculation.model.customtypes.LTreeType")
+    private String materializedPath;
 
-	public String getMaterializedPath() {
-		return materializedPath;
-	}
+    public Person getPerson() {
+        return person;
+    }
 
-	public void setMaterializedPath(String materializedPath) {
-		this.materializedPath = materializedPath;
-	}
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public OrganizationStructure getParentStructure() {
+        return parentStructure;
+    }
+
+    public void setParentStructure(OrganizationStructure parentStructure) {
+        this.parentStructure = parentStructure;
+    }
+
+    public List<OrganizationStructure> getSubordinates() {
+        return subordinates;
+    }
+
+    public void setSubordinates(List<OrganizationStructure> subordinates) {
+        this.subordinates = subordinates;
+    }
+
+    public String getMaterializedPath() {
+        return materializedPath;
+    }
+
+    public void setMaterializedPath(String materializedPath) {
+        this.materializedPath = materializedPath;
+    }
 }
