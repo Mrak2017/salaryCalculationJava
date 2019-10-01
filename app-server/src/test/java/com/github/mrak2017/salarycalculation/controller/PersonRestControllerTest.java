@@ -401,9 +401,34 @@ public class PersonRestControllerTest extends BaseTest {
 		}
 	}
 
+	/** Possible subordinates - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) First level subordinates
+	 * 4) Person chiefs from any level of hierarchy*/
 	@Test
-	void testGetPossibleSubordinates() {
-		// TODO
+	void testGetPossibleSubordinates() throws Exception {
+		Person person = createManager();
+		Person manager = createManager();
+		Person subordinate = createEmployee();
+		Person employee = createEmployee();
+
+		Person personWithoutGroup = createEmployee();
+		Person2Group p2g = controller.getCurrentGroup(personWithoutGroup).orElseThrow(ResourceNotFoundException::new);
+		controller.deleteGroup(p2g.getId());
+
+		controller.updateChief(person.getId(), manager.getId());
+		controller.updateChief(subordinate.getId(), person.getId());
+
+		List<ComboboxItemDTO> result = getResultList(
+				get(REST_PREFIX + person.getId() + "/get-possible-subordinates")
+						.contentType("application/json"),
+				ComboboxItemDTO.class
+		);
+
+		assertEquals(1, result.size());
+		assertTrue(CheckUtil.listContainsByFunction(result,
+				dto -> dto.name.equals(employee.getFirstName() + " " + employee.getLastName())));
 	}
 
 	@Test
