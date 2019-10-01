@@ -89,18 +89,10 @@ public class PersonControllerImpl implements PersonController {
 	public List<Person> getFirstLevelSubordinates(Person person) {
 		OrganizationStructure orgStructure = orgStructureRep.findByPerson(person);
 		CheckUtil.AssertNotNull(orgStructure, "Unable to find hierarchy unit for Person with id:" + person.getId());
-		String childPath = getChildPath(orgStructure);
-		List<OrganizationStructure> subOrgStructures = orgStructureRep.findFirstLevelByPath(childPath);
-		return subOrgStructures.stream()
-					   .map(OrganizationStructure::getPerson)
-					   .collect(Collectors.toList());
-	}
-
-	private String getChildPath(OrganizationStructure structure) {
-		return structure.getMaterializedPath() != null ?
-					   String.join(OrganizationStructure.MAT_PATH_DELIMITER,
-							   structure.getMaterializedPath(), structure.getPerson().getId().toString())
-					   : structure.getPerson().getId().toString();
+		return orgStructure.getSubordinates()
+				.stream()
+				.map(OrganizationStructure::getPerson)
+				.collect(Collectors.toList());
 	}
 
 	@Override
