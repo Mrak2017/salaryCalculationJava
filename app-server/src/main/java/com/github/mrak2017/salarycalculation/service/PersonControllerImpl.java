@@ -139,8 +139,27 @@ public class PersonControllerImpl implements PersonController {
 	 * */
 	@Override
 	public List<Person> getPossibleSubordinates(Person person) {
-		//TODO
-		return Collections.emptyList();
+		List<Person> personsToExclude = new ArrayList<>();
+		personsToExclude.add(person);
+
+		List<Person> firstLevelSubordinates = getFirstLevelSubordinates(person);
+		personsToExclude.addAll(firstLevelSubordinates);
+
+		List<Person> allChiefs = getAllChiefsList(person, new ArrayList<>());
+		personsToExclude.addAll(allChiefs);
+
+		return groupRepository.getPersonListWithCurrentGroupExists(personsToExclude, Arrays.asList(GroupType.values()));
+	}
+
+	private List<Person> getAllChiefsList(Person person, List<Person> result) {
+		OrganizationStructure os = orgStructureRep.findByPerson(person);
+		OrganizationStructure parentOS = os.getParentStructure();
+		if (parentOS != null) {
+			result.add(parentOS.getPerson());
+			return getAllChiefsList(parentOS.getPerson(), result);
+		}
+
+		return result;
 	}
 
 	@Override
