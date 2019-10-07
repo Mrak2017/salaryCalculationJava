@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.ValidationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,15 +116,19 @@ public class PersonControllerImpl implements PersonController {
 	 * */
 	@Override
 	public List<Person> getPossibleChiefs(Person person) {
+		List<Person> personsToExclude = new ArrayList<>();
+		personsToExclude.add(person);
+		getCurrentChief(person).ifPresent(personsToExclude::add);
+
 		OrganizationStructure organizationStructure = orgStructureRep.findByPerson(person);
 		List<Person> allSubordinates = orgStructureRep.findAllByPath(ensureGetMaterializedPath(organizationStructure))
 				.stream()
 				.map(OrganizationStructure::getPerson)
 				.collect(Collectors.toList());
-		Optional<Person> currentChief = getCurrentChief(person);
-		List<Person> result = groupRepository.getPossibleChiefs(person, currentChief);
-		result.removeAll(allSubordinates);
-		return result;
+		personsToExclude.addAll(allSubordinates);
+
+		return groupRepository.getPersonListWithCurrentGroupExists(personsToExclude,
+				Arrays.asList(GroupType.Manager, GroupType.Salesman));
 	}
 
 	/** Possible subordinates - all persons except:

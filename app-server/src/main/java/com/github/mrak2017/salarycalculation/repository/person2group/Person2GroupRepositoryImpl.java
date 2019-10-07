@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom {
 
@@ -67,23 +68,18 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 		return em.createQuery(query).getResultList();
 	}
 
-	/** Possible chiefs - all persons except:
-	 * 1) Person itself
-	 * 2) Person without group at this moment
-	 * 3) Person group is different from Manager, Salesman
-	 * 4) Person's subordinates of any level (subordinates removes in class PersonControllerImpl method getPossibleChiefs)
-	 * 5) Person's current chief
-	 * */
+
 	@Override
-	public List<Person> getPossibleChiefs(Person person, Optional<Person> currentChief) {
+	public List<Person> getPersonListWithCurrentGroupExists(List<Person> excludedPersons, List<GroupType> possibleGroups) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> query = cb.createQuery(Person.class);
 
 		Root<Person2Group> root = query.from(Person2Group.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		// Exclude person itself
-		predicates.add(cb.notEqual(root.get("person").get("id"), person.getId()));
+		// Exclude persons
+		List<Long> excludedIdsList = excludedPersons.stream().map(Person::getId).collect(Collectors.toList());
+		predicates.add(cb.not(root.get("person").get("id").in(excludedIdsList)));
 
 		// Only person with active group at this moment
 		predicates.add(cb.lessThanOrEqualTo(root.get("periodStart"), LocalDate.now()));
@@ -92,11 +88,8 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 				cb.greaterThanOrEqualTo(root.get("periodEnd"), LocalDate.now())
 		));
 
-		// Only person with group Manager or Salesman
-		predicates.add(root.get("groupType").in( Arrays.asList(GroupType.Manager, GroupType.Salesman)));
-
-		// Exclude current chief
-		currentChief.ifPresent(value -> predicates.add(cb.notEqual(root.get("person").get("id"), value.getId())));
+		// Only persons with selected groups
+		predicates.add(root.get("groupType").in(possibleGroups));
 
 		query.where(predicates.toArray(new Predicate[0]));
 		query.distinct(true);

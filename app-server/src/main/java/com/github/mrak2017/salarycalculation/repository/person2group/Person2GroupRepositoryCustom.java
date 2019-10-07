@@ -1,5 +1,6 @@
 package com.github.mrak2017.salarycalculation.repository.person2group;
 
+import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 
@@ -12,5 +13,5 @@ public interface Person2GroupRepositoryCustom {
 
 	List<Person2Group> getExistingGroups(Person person, Person2Group p2g);
 
-	List<Person> getPossibleChiefs(Person person, Optional<Person> currentChief);
+	List<Person> getPersonListWithCurrentGroupExists(List<Person> excludedPersons, List<GroupType> possibleGroups);
 }
