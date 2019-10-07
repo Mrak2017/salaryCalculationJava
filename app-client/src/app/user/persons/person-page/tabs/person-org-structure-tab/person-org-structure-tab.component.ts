@@ -78,13 +78,7 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
         shareReplay(1),
     );
 
-    this.chiefs$ = combineLatest(
-        this.service.getPossibleChiefs(),
-        this.service.id$,
-    ).pipe(
-        map(([chiefs, id]) => chiefs.filter(dto => dto.id !== id)),
-        shareReplay(1),
-    );
+    this.chiefs$ = this.service.getPossibleChiefs();
 
     const updateSelectedChiefSubscription = this.chiefs$.pipe(withLatestFrom(this.currentChiefId$))
         .subscribe(([chiefs, id]) => this.selectedChief = chiefs.find(val => val.id === id));

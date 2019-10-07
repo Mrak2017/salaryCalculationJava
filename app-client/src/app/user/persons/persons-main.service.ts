@@ -66,8 +66,8 @@ export class PersonsMainService {
     return this.http.put(this.restUrl() + 'update-main-info', PersonsMainService.convertToDTO(person));
   }
 
-  getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
-    return this.http.get<ComboBoxItemDTO[]>(this.restUrl() + 'get-possible-chiefs')
+  getPossibleChiefs(personId: number): Observable<ComboBoxItemDTO[]> {
+    return this.http.get<ComboBoxItemDTO[]>(this.restUrl() + 'get-possible-chiefs/' + personId)
         .pipe(
             map(data => data.map(value => new ComboBoxItemDTO(value.id, value.name))),
         )

@@ -47,7 +47,10 @@ export class PersonPageService {
   }
 
   getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
-    return this.service.getPossibleChiefs();
+    return this.id$.pipe(
+        switchMap(id => this.service.getPossibleChiefs(id)),
+        shareReplay(1)
+    );
   }
 
   updateChief(newChiefId: number) {
