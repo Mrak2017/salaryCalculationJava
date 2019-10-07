@@ -12,5 +12,5 @@ public interface Person2GroupRepositoryCustom {
 
 	List<Person2Group> getExistingGroups(Person person, Person2Group p2g);
 
-	List<Person> getPossibleChiefs();
+	List<Person> getPossibleChiefs(Person person, Optional<Person> currentChief);
 }

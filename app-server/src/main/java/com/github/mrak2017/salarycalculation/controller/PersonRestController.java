@@ -56,9 +56,10 @@ public class PersonRestController {
 		controller.updatePerson(dto);
 	}
 
-	@GetMapping("get-possible-chiefs")
-	List<ComboboxItemDTO> getPossibleChiefs() {
-		return controller.getPossibleChiefs()
+	@GetMapping("get-possible-chiefs/{personId}")
+	List<ComboboxItemDTO> getPossibleChiefs(@PathVariable long personId) {
+		Person person = controller.find(personId).orElseThrow(ResourceNotFoundException::new);
+		return controller.getPossibleChiefs(person)
 					   .stream()
 					   .map(ComboboxItemDTO::new)
 					   .collect(Collectors.toList());

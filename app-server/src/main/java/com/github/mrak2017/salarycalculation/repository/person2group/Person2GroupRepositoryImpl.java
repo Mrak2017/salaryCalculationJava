@@ -67,24 +67,41 @@ public class Person2GroupRepositoryImpl implements Person2GroupRepositoryCustom 
 		return em.createQuery(query).getResultList();
 	}
 
+	/** Possible chiefs - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) Person group is different from Manager, Salesman
+	 * 4) Person's subordinates of any level (subordinates removes in class PersonControllerImpl method getPossibleChiefs)
+	 * 5) Person's current chief
+	 * */
 	@Override
-	public List<Person> getPossibleChiefs() {
+	public List<Person> getPossibleChiefs(Person person, Optional<Person> currentChief) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> query = cb.createQuery(Person.class);
 
 		Root<Person2Group> root = query.from(Person2Group.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		predicates.add(root.get("groupType").in( Arrays.asList(GroupType.Manager, GroupType.Salesman)));
+		// Exclude person itself
+		predicates.add(cb.notEqual(root.get("person").get("id"), person.getId()));
+
+		// Only person with active group at this moment
 		predicates.add(cb.lessThanOrEqualTo(root.get("periodStart"), LocalDate.now()));
 		predicates.add(cb.or(
 				cb.isNull(root.get("periodEnd")),
 				cb.greaterThanOrEqualTo(root.get("periodEnd"), LocalDate.now())
 		));
 
+		// Only person with group Manager or Salesman
+		predicates.add(root.get("groupType").in( Arrays.asList(GroupType.Manager, GroupType.Salesman)));
+
+		// Exclude current chief
+		currentChief.ifPresent(value -> predicates.add(cb.notEqual(root.get("person").get("id"), value.getId())));
+
 		query.where(predicates.toArray(new Predicate[0]));
 		query.distinct(true);
 		query.select(root.get("person"));
+
 		return em.createQuery(query).getResultList();
 	}
 }

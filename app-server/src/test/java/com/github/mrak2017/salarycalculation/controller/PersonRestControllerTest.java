@@ -195,9 +195,17 @@ public class PersonRestControllerTest extends BaseTest {
 		assertEquals(0, result.getBaseSalaryPart().compareTo(dto.baseSalaryPart));
 	}
 
+	/** Possible chiefs - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) Person group is different from Manager, Salesman
+	 * 4) Person's subordinates of any level
+	 * 5) Person's current chief
+	 *
+	 * This test checks 1st, 2nd and 3rd conditions */
 	@Test
-	void testGetPossibleChiefs() throws Exception {
-		createEmployee();
+	void testGetPossibleChiefsWithGroupCheck() throws Exception {
+		Person employee = createEmployee();
 		Person manager = createManager();
 		Person salesman = createSalesman();
 
@@ -217,7 +225,7 @@ public class PersonRestControllerTest extends BaseTest {
 		controller.addGroup(managerPastId, managerPastGroup);
 
 		List<ComboboxItemDTO> result = getResultList(
-				get(REST_PREFIX + "get-possible-chiefs").contentType("application/json"),
+				get(REST_PREFIX + "get-possible-chiefs/" + employee.getId()).contentType("application/json"),
 				ComboboxItemDTO.class
 		);
 
@@ -227,6 +235,37 @@ public class PersonRestControllerTest extends BaseTest {
 
 		assertTrue(CheckUtil.listContainsByFunction(result,
 				dto -> dto.name.equals(salesman.getFirstName() + " " + salesman.getLastName())));
+	}
+
+	/** Possible chiefs - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) Person group is different from Manager, Salesman
+	 * 4) Person's subordinates of any level
+	 * 5) Person's current chief
+	 *
+	 * This test checks 4th and 5th conditions */
+	@Test
+	void testGetPossibleChiefsWithoutSubordinates() throws Exception {
+		Person chief = createManager();
+		Person person = createManager();
+		Person subordinate1Level = createManager();
+		Person subordinate2Level = createManager();
+		Person possibleChief = createManager();
+
+		controller.updateChief(person.getId(), chief.getId());
+		controller.updateChief(subordinate1Level.getId(), person.getId());
+		controller.updateChief(subordinate2Level.getId(), subordinate1Level.getId());
+
+		List<ComboboxItemDTO> result = getResultList(
+				get(REST_PREFIX + "get-possible-chiefs/" + person.getId()).contentType("application/json"),
+				ComboboxItemDTO.class
+		);
+
+		assertEquals(1, result.size());
+
+		assertTrue(CheckUtil.listContainsByFunction(result,
+				dto -> dto.name.equals(possibleChief.getFirstName() + " " + possibleChief.getLastName())));
 	}
 
 	@Test
@@ -405,19 +444,19 @@ public class PersonRestControllerTest extends BaseTest {
 	 * 1) Person itself
 	 * 2) Person without group at this moment
 	 * 3) First level subordinates
-	 * 4) Person chiefs from any level of hierarchy*/
+	 * 4) Person's chiefs of any level of hierarchy*/
 	@Test
 	void testGetPossibleSubordinates() throws Exception {
 		Person person = createManager();
-		Person manager = createManager();
+		Person chief = createManager();
 		Person subordinate = createEmployee();
-		Person employee = createEmployee();
+		Person possibleSubordinate = createEmployee();
 
 		Person personWithoutGroup = createEmployee();
 		Person2Group p2g = controller.getCurrentGroup(personWithoutGroup).orElseThrow(ResourceNotFoundException::new);
 		controller.deleteGroup(p2g.getId());
 
-		controller.updateChief(person.getId(), manager.getId());
+		controller.updateChief(person.getId(), chief.getId());
 		controller.updateChief(subordinate.getId(), person.getId());
 
 		List<ComboboxItemDTO> result = getResultList(
@@ -428,7 +467,7 @@ public class PersonRestControllerTest extends BaseTest {
 
 		assertEquals(1, result.size());
 		assertTrue(CheckUtil.listContainsByFunction(result,
-				dto -> dto.name.equals(employee.getFirstName() + " " + employee.getLastName())));
+				dto -> dto.name.equals(possibleSubordinate.getFirstName() + " " + possibleSubordinate.getLastName())));
 	}
 
 	@Test

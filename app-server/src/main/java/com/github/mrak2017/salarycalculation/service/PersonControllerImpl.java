@@ -109,11 +109,32 @@ public class PersonControllerImpl implements PersonController {
 		return Optional.empty();
 	}
 
+	/** Possible chiefs - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) Person group is different from Manager, Salesman
+	 * 4) Person's subordinates of any level
+	 * 5) Person's current chief
+	 * */
 	@Override
-	public List<Person> getPossibleChiefs() {
-		return groupRepository.getPossibleChiefs();
+	public List<Person> getPossibleChiefs(Person person) {
+		OrganizationStructure organizationStructure = orgStructureRep.findByPerson(person);
+		List<Person> allSubordinates = orgStructureRep.findAllByPath(ensureGetMaterializedPath(organizationStructure))
+				.stream()
+				.map(OrganizationStructure::getPerson)
+				.collect(Collectors.toList());
+		Optional<Person> currentChief = getCurrentChief(person);
+		List<Person> result = groupRepository.getPossibleChiefs(person, currentChief);
+		result.removeAll(allSubordinates);
+		return result;
 	}
 
+	/** Possible subordinates - all persons except:
+	 * 1) Person itself
+	 * 2) Person without group at this moment
+	 * 3) First level subordinates
+	 * 4) Person's chiefs of any level of hierarchy
+	 * */
 	@Override
 	public List<Person> getPossibleSubordinates(Person person) {
 		//TODO
@@ -230,10 +251,7 @@ public class PersonControllerImpl implements PersonController {
 	private void recalculateMatPathDownRecursive(OrganizationStructure orgStructure) {
 		OrganizationStructure parentOS = orgStructure.getParentStructure();
 		if (parentOS != null) {
-			String newMatPath = parentOS.getMaterializedPath() != null
-					? String.join(OrganizationStructure.MAT_PATH_DELIMITER, parentOS.getMaterializedPath(),
-						parentOS.getPerson().getId().toString())
-					: parentOS.getPerson().getId().toString();
+			String newMatPath = ensureGetMaterializedPath(parentOS);
 			orgStructure.setMaterializedPath(newMatPath);
 		} else {
 			orgStructure.setMaterializedPath(null);
@@ -243,6 +261,16 @@ public class PersonControllerImpl implements PersonController {
 		List<OrganizationStructure> firstLevel = orgStructureRep.findByParentStructure(orgStructure);
 		for (OrganizationStructure child : firstLevel) {
 			recalculateMatPathDownRecursive(child);
+		}
+	}
+
+	private String ensureGetMaterializedPath(OrganizationStructure os) {
+		if (os.getMaterializedPath() != null) {
+			String personId = os.getPerson().getId().toString();
+			return String.join(OrganizationStructure.MAT_PATH_DELIMITER, os.getMaterializedPath(), personId);
+		}
+		else {
+			return os.getPerson().getId().toString();
 		}
 	}
 

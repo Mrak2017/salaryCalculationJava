@@ -29,7 +29,7 @@ public interface PersonController {
 
 	Optional<Person> getCurrentChief(Person person);
 
-	List<Person> getPossibleChiefs();
+	List<Person> getPossibleChiefs(Person person);
 
 	List<Person> getPossibleSubordinates(Person person);
 

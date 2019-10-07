@@ -17,7 +17,4 @@ public interface OrganizationStructureRepository extends JpaRepository<Organizat
 
 	@Query(value = "SELECT * FROM sc_organization_structure WHERE materialized_path <@ CAST(:pathToSearch AS ltree)", nativeQuery = true)
 	List<OrganizationStructure> findAllByPath(@Param("pathToSearch") String pathToSearch);
-
-	@Query(value = "SELECT * FROM sc_organization_structure WHERE materialized_path = CAST(:pathToSearch AS ltree)", nativeQuery = true)
-	List<OrganizationStructure> findFirstLevelByPath(@Param("pathToSearch") String pathToSearch);
 }
