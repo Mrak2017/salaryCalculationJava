@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
+import com.github.mrak2017.salarycalculation.repository.orgStructure.OrganizationStructureRepository;
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,8 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +32,9 @@ public class BaseTest {
 
 	@Autowired
 	protected PersonController controller;
+
+	@Autowired
+	protected OrganizationStructureRepository orgStructureRepository;
 
 	protected String getStringUUID() {
 		return UUID.randomUUID().toString();
@@ -57,7 +59,6 @@ public class BaseTest {
 					   .getContentAsString();
 	}
 
-
 	protected Person createEmployee() {
 		return createEmployee(new BigDecimal(100), LocalDate.now());
 	}
@@ -71,6 +72,24 @@ public class BaseTest {
 		dtoEmployee.currentGroup = GroupType.Employee;
 
 		Long id = controller.create(dtoEmployee);
+		Person result = controller.find(id).orElse(null);
+		assertNotNull(result);
+		return result;
+	}
+
+	protected Person createManager() {
+		return createManager(new BigDecimal(100), LocalDate.now());
+	}
+
+	protected Person createManager(BigDecimal baseSalaryPart, LocalDate startDate) {
+		PersonJournalDTO dtoManager = new PersonJournalDTO();
+		dtoManager.firstName = getStringUUID();
+		dtoManager.lastName = getStringUUID();
+		dtoManager.baseSalaryPart = baseSalaryPart;
+		dtoManager.startDate = startDate;
+		dtoManager.currentGroup = GroupType.Manager;
+
+		Long id = controller.create(dtoManager);
 		Person result = controller.find(id).orElse(null);
 		assertNotNull(result);
 		return result;

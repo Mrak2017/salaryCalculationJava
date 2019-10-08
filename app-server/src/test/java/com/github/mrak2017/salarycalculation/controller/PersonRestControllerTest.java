@@ -6,16 +6,14 @@ import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
-import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
+import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import com.github.mrak2017.salarycalculation.repository.PersonRepository;
-import com.github.mrak2017.salarycalculation.repository.orgStructure.OrganizationStructureRepository;
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
-import com.github.mrak2017.salarycalculation.service.PersonController;
 import com.github.mrak2017.salarycalculation.utils.CheckUtil;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
@@ -46,23 +44,6 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Autowired
 	private Person2GroupRepository person2GroupRepository;
-
-	@Autowired
-	private OrganizationStructureRepository orgStructureRepository;
-
-	private Person createManager() {
-		PersonJournalDTO dtoManager = new PersonJournalDTO();
-		dtoManager.firstName = getStringUUID();
-		dtoManager.lastName = getStringUUID();
-		dtoManager.baseSalaryPart = new BigDecimal(100);
-		dtoManager.startDate = LocalDate.now();
-		dtoManager.currentGroup = GroupType.Manager;
-
-		Long id = controller.create(dtoManager);
-		Person result = controller.find(id).orElse(null);
-		assertNotNull(result);
-		return result;
-	}
 
 	private Person createSalesman() {
 		PersonJournalDTO dtoSalesman = new PersonJournalDTO();

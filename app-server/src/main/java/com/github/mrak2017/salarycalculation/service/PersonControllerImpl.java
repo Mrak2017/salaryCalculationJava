@@ -3,8 +3,8 @@ package com.github.mrak2017.salarycalculation.service;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
-import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
+import com.github.mrak2017.salarycalculation.core.Exception.UserErrorTemplate;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.OrganizationStructure;
 import com.github.mrak2017.salarycalculation.model.person.Person;
@@ -13,7 +13,6 @@ import com.github.mrak2017.salarycalculation.repository.PersonRepository;
 import com.github.mrak2017.salarycalculation.repository.orgStructure.OrganizationStructureRepository;
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.utils.CheckUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ValidationException;
@@ -87,7 +86,8 @@ public class PersonControllerImpl implements PersonController {
 	public List<Person> getFirstLevelSubordinates(Person person) {
 		OrganizationStructure orgStructure = orgStructureRep.findByPerson(person);
 		CheckUtil.AssertNotNull(orgStructure, "Unable to find hierarchy unit for Person with id:" + person.getId());
-		return orgStructure.getSubordinates()
+		return Optional.ofNullable(orgStructure.getSubordinates())
+				.orElseGet(Collections::emptyList)
 				.stream()
 				.map(OrganizationStructure::getPerson)
 				.collect(Collectors.toList());
