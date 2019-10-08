@@ -42,9 +42,6 @@ public class PersonRestControllerTest extends BaseTest {
 	private static final String REST_PREFIX = "/api/persons/";
 
 	@Autowired
-	private PersonController controller;
-
-	@Autowired
 	private PersonRepository personRepository;
 
 	@Autowired
@@ -52,20 +49,6 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Autowired
 	private OrganizationStructureRepository orgStructureRepository;
-
-	private Person createEmployee() {
-		PersonJournalDTO dtoEmployee = new PersonJournalDTO();
-		dtoEmployee.firstName = getStringUUID();
-		dtoEmployee.lastName = getStringUUID();
-		dtoEmployee.baseSalaryPart = new BigDecimal(100);
-		dtoEmployee.startDate = LocalDate.now();
-		dtoEmployee.currentGroup = GroupType.Employee;
-
-		Long id = controller.create(dtoEmployee);
-		Person result = controller.find(id).orElse(null);
-		assertNotNull(result);
-		return result;
-	}
 
 	private Person createManager() {
 		PersonJournalDTO dtoManager = new PersonJournalDTO();
@@ -468,16 +451,6 @@ public class PersonRestControllerTest extends BaseTest {
 		assertEquals(1, result.size());
 		assertTrue(CheckUtil.listContainsByFunction(result,
 				dto -> dto.name.equals(possibleSubordinate.getFirstName() + " " + possibleSubordinate.getLastName())));
-	}
-
-	@Test
-	void testCalcSalaryOnDate() {
-		// TODO
-	}
-
-	@Test
-	void testCalcTotalSalaryOnDate() {
-		// TODO
 	}
 
 }
