@@ -45,19 +45,7 @@ public class PersonRestControllerTest extends BaseTest {
 	@Autowired
 	private Person2GroupRepository person2GroupRepository;
 
-	private Person createSalesman() {
-		PersonJournalDTO dtoSalesman = new PersonJournalDTO();
-		dtoSalesman.firstName = getStringUUID();
-		dtoSalesman.lastName = getStringUUID();
-		dtoSalesman.baseSalaryPart = new BigDecimal(100);
-		dtoSalesman.startDate = LocalDate.now();
-		dtoSalesman.currentGroup = GroupType.Salesman;
 
-		Long id = controller.create(dtoSalesman);
-		Person result = controller.find(id).orElse(null);
-		assertNotNull(result);
-		return result;
-	}
 
 	@Test
 	void testGetForJournal() throws Exception {

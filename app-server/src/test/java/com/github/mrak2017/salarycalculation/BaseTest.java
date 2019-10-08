@@ -94,4 +94,22 @@ public class BaseTest {
 		assertNotNull(result);
 		return result;
 	}
+
+	protected Person createSalesman() {
+		return createSalesman(new BigDecimal(100), LocalDate.now());
+	}
+
+	protected Person createSalesman(BigDecimal baseSalaryPart, LocalDate startDate) {
+		PersonJournalDTO dtoSalesman = new PersonJournalDTO();
+		dtoSalesman.firstName = getStringUUID();
+		dtoSalesman.lastName = getStringUUID();
+		dtoSalesman.baseSalaryPart = baseSalaryPart;
+		dtoSalesman.startDate = startDate;
+		dtoSalesman.currentGroup = GroupType.Salesman;
+
+		Long id = controller.create(dtoSalesman);
+		Person result = controller.find(id).orElse(null);
+		assertNotNull(result);
+		return result;
+	}
 }
