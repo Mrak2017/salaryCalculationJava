@@ -5,28 +5,21 @@ import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import static org.junit.Assert.assertEquals;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class SalaryCalculatorImplTest extends BaseTest {
 
-	/*@Test
-	public void getCurrentSalaryTest() {
-		Person person = new Person();
+	@Autowired
+	private SalaryCalculator calculator;
 
-		Person2Group person2Group1 = new Person2Group();
-		person2Group1.setPerson(person);
-		person2Group1.setPeriodStart(LocalDate.of(2019,1,1));
-		person2Group1.setPeriodEnd(LocalDate.of(2019,2,1));
-		person2Group1.setGroupType(GroupType.Employee);
-
-		Person2Group person2Group2 = new Person2Group();
-		person2Group2.setPerson(person);
-		person2Group2.setPeriodStart(LocalDate.of(2019,2,2));
-		person2Group2.setGroupType(GroupType.Manager);
-	}*/
+	private final BigDecimal employeeYearRatio = new BigDecimal(0.3);
 
 	/**- group = Employee
 	 * - 1 year of job experience
@@ -34,17 +27,46 @@ public class SalaryCalculatorImplTest extends BaseTest {
 	 * */
 	@Test
 	void testCalcSalaryOnDateEmployee1Year() {
-		// TODO
+		BigDecimal baseSalaryPart = new BigDecimal(100);
+		int yearsCount = 1;
+
+		checkEmployeeSalary(baseSalaryPart, yearsCount);
 	}
 
+	/**- group = Employee
+	 * - 3 year of job experience
+	 * - salary base part = 200
+	 * */
 	@Test
 	void testCalcSalaryOnDateEmployee3Years() {
-		// TODO
+		BigDecimal baseSalaryPart = new BigDecimal(200);
+		int yearsCount = 3;
+
+		checkEmployeeSalary(baseSalaryPart, yearsCount);
 	}
 
+	/**- group = Employee
+	 * - 11 year of job experience
+	 * - salary base part = 300
+	 * */
 	@Test
 	void testCalcSalaryOnDateEmployee11Years() {
-		// TODO
+		BigDecimal baseSalaryPart = new BigDecimal(300);
+		int yearsCount = 11;
+
+		checkEmployeeSalary(baseSalaryPart, yearsCount);
+	}
+
+	private void checkEmployeeSalary(BigDecimal baseSalaryPart, int yearsCount) {
+		int startYear = LocalDate.now().getYear() - yearsCount + 1;
+
+		Person employee = createEmployee(baseSalaryPart, LocalDate.of(startYear, 1, 1));
+		BigDecimal salary = calculator.getSalaryOnDate(employee, LocalDate.now());
+		int yearsCountLessThen10 = Math.min(yearsCount, 10);
+		BigDecimal expectedSalary = baseSalaryPart.add(
+				baseSalaryPart.multiply(this.employeeYearRatio.multiply(new BigDecimal(yearsCountLessThen10))));
+
+		assertEquals(expectedSalary, salary);
 	}
 
 	@Test

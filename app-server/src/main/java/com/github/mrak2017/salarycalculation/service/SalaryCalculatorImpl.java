@@ -10,9 +10,6 @@ import java.time.LocalDate;
 @Service
 public class SalaryCalculatorImpl implements SalaryCalculator {
 
-    @Autowired
-    private SalaryCalculator calculator;
-
     @Override
     public BigDecimal getTotalSalaryOnDate(LocalDate onDate) {
         //TODO

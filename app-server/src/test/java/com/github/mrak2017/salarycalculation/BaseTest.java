@@ -59,11 +59,15 @@ public class BaseTest {
 
 
 	protected Person createEmployee() {
+		return createEmployee(new BigDecimal(100), LocalDate.now());
+	}
+
+	protected Person createEmployee(BigDecimal baseSalaryPart, LocalDate startDate) {
 		PersonJournalDTO dtoEmployee = new PersonJournalDTO();
 		dtoEmployee.firstName = getStringUUID();
 		dtoEmployee.lastName = getStringUUID();
-		dtoEmployee.baseSalaryPart = new BigDecimal(100);
-		dtoEmployee.startDate = LocalDate.now();
+		dtoEmployee.baseSalaryPart = baseSalaryPart;
+		dtoEmployee.startDate = startDate;
 		dtoEmployee.currentGroup = GroupType.Employee;
 
 		Long id = controller.create(dtoEmployee);
