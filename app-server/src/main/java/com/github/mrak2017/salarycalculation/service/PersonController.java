@@ -8,6 +8,7 @@ import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ public interface PersonController {
 	List<Person> findAll(String search);
 
 	Optional<Person2Group> getCurrentGroup(Person person);
+
+	Optional<Person2Group> getGroupOnDate(Person person, LocalDate date);
 
 	BigDecimal getCurrentSalary(Person person);
 
@@ -30,6 +33,8 @@ public interface PersonController {
 	Optional<Person> getCurrentChief(Person person);
 
 	List<Person> getPossibleChiefs(Person person);
+
+	List<Person> getAllSubordinates(Person person);
 
 	List<Person> getPossibleSubordinates(Person person);
 

@@ -1,7 +1,17 @@
 package com.github.mrak2017.salarycalculation.model.person;
 
 public enum GroupType {
-    Employee,
-    Manager,
-    Salesman
+    Employee("EmployeeWorkExperienceRatio", "EmployeeMaxWorkExperienceRatio", null),
+    Manager("ManagerWorkExperienceRatio", "ManagerMaxWorkExperienceRatio", "ManagerSubordinatesRatioSetting"),
+    Salesman("SalesmanWorkExperienceRatio", "SalesmanMaxWorkExperienceRatio", "SalesmanSubordinatesRatioSetting");
+
+    public final String workExperienceRatioSetting;
+    public final String maxWorkExperienceRatioSetting;
+    public final String subordinatesRatioSetting;
+
+    GroupType(String workExpRatio, String maxWorkExpRatio, String subRatioSetting) {
+        this.workExperienceRatioSetting = workExpRatio;
+        this.maxWorkExperienceRatioSetting = maxWorkExpRatio;
+        this.subordinatesRatioSetting = subRatioSetting;
+    }
 }
