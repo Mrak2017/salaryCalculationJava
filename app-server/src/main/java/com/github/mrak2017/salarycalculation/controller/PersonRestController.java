@@ -6,10 +6,11 @@ import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import com.github.mrak2017.salarycalculation.service.PersonController;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.mrak2017.salarycalculation.service.SalaryCalculator;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +25,15 @@ import java.util.stream.Collectors;
 @RequestMapping("api/persons/")
 public class PersonRestController {
 
-	@Autowired
-	private PersonController controller;
+	private final PersonController controller;
+
+	private final SalaryCalculator calculator;
+
+	public PersonRestController(PersonController controller, SalaryCalculator calculator) {
+		this.controller = controller;
+		this.calculator = calculator;
+	}
+
 
 	@GetMapping("journal")
 	List<PersonJournalDTO> getForJournal(@RequestParam(required = false) String q) {
@@ -46,7 +54,7 @@ public class PersonRestController {
 		Person person = controller.find(id).orElseThrow(ResourceNotFoundException::new);
 		List<Person2Group> groups = controller.getAllGroups(person);
 		Person chief = controller.getCurrentChief(person).orElse(null);
-		BigDecimal salary = controller.getCurrentSalary(person);
+		BigDecimal salary = calculator.getSalaryOnDate(person, LocalDate.now());
 		OrgStructureItemDTO hierarchy = getChildrenOrgStructureDTO(person);
 		return new PersonDTO(person, groups, chief, salary, hierarchy);
 	}
@@ -125,7 +133,7 @@ public class PersonRestController {
 		GroupType groupType = controller.getCurrentGroup(person)
 									  .map(Person2Group::getGroupType)
 									  .orElse(null);
-		BigDecimal salary = controller.getCurrentSalary(person);
+		BigDecimal salary = calculator.getSalaryOnDate(person, LocalDate.now());
 		return new PersonJournalDTO(person, groupType, salary);
 	}
 }

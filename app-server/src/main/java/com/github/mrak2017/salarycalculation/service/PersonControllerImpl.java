@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class PersonControllerImpl implements PersonController {
 
-    private final SalaryCalculator calculator;
-
     private final PersonRepository repository;
 
     private final Person2GroupRepository groupRepository;
@@ -33,11 +31,10 @@ public class PersonControllerImpl implements PersonController {
     private final OrganizationStructureRepository orgStructureRep;
 
     PersonControllerImpl(PersonRepository repository, Person2GroupRepository groupRepository,
-                         OrganizationStructureRepository orgStructureRep, SalaryCalculator calculator) {
+                         OrganizationStructureRepository orgStructureRep) {
         this.repository = repository;
         this.groupRepository = groupRepository;
         this.orgStructureRep = orgStructureRep;
-        this.calculator = calculator;
     }
 
     @Override
@@ -53,11 +50,6 @@ public class PersonControllerImpl implements PersonController {
     @Override
     public Optional<Person2Group> getGroupOnDate(Person person, LocalDate date) {
         return groupRepository.getPersonGroupOnDate(person, date);
-    }
-
-    @Override
-    public BigDecimal getCurrentSalary(Person person) {
-        return calculator.getSalaryOnDate(person, LocalDate.now());
     }
 
     @Override

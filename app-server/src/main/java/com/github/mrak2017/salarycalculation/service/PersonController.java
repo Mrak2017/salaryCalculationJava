@@ -20,8 +20,6 @@ public interface PersonController {
 
 	Optional<Person2Group> getGroupOnDate(Person person, LocalDate date);
 
-	BigDecimal getCurrentSalary(Person person);
-
 	Long create(PersonJournalDTO dto);
 
 	Optional<Person> find(Long id);

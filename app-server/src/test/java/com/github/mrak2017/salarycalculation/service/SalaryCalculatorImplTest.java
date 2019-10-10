@@ -177,7 +177,7 @@ public class SalaryCalculatorImplTest extends BaseTest {
      * Expected salary = 300 * 1.35 = 405
      */
     @Test
-    void testCalcSalaryOnDateSales36Years0Subordinates() {
+    void testCalcSalaryOnDateSalesman36Years0Subordinates() {
         Person salesman = createWithExperience(BigDecimal.valueOf(300), 36, this::createSalesman);
         BigDecimal salary = calculator.getSalaryOnDate(salesman, LocalDate.now());
 

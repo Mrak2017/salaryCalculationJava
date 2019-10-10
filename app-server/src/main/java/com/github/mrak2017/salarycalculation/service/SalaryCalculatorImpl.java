@@ -41,17 +41,19 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
         BigDecimal workExpAddition = getWorkExperienceAddition(group.get(), onDate);
         BigDecimal subordinatesAddition = getSubordinatesAddition(group.get(), onDate);
 
-        BigDecimal result = baseSalaryPart.add(workExpAddition).add(subordinatesAddition);
+        BigDecimal result = baseSalaryPart.add(workExpAddition)
+                .add(subordinatesAddition)
+                .setScale(2, RoundingMode.HALF_UP);
 
         checkResult(result, person);
         return result;
     }
 
     private BigDecimal getWorkExperienceAddition(Person2Group group, LocalDate onDate) {
-        long yearsWorked = ChronoUnit.YEARS.between(group.getPeriodStart(), onDate);
+        long yearsWorked = ChronoUnit.YEARS.between(group.getPeriodStart(), onDate) + 1;
         BigDecimal workExpRatio = getWorkExperienceRatio(group.getGroupType())
-                .min(getMaxWorkExperienceRatio(group.getGroupType()))
                 .multiply(BigDecimal.valueOf(yearsWorked))
+                .min(getMaxWorkExperienceRatio(group.getGroupType()))
                 .setScale(2, RoundingMode.HALF_UP);
 
         return group.getPerson()
