@@ -43,11 +43,10 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
 
     @Override
     public BigDecimal getTotalSalaryOnDate(LocalDate onDate) {
-        //HashMap<Person, BigDecimal> storage = new HashMap<>();
-
         List<Person> all = personController.findAll("");
 
-        ExecutorService pool = Executors.newFixedThreadPool(3);
+        final int NUMBER_OF_THREADS = 3;
+        ExecutorService pool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         Set<Future<BigDecimal>> set = new HashSet<Future<BigDecimal>>();
         for (Person person: all) {
             Callable<BigDecimal> callable = new SingleSalaryCalcForTotalCallable(person, onDate);
