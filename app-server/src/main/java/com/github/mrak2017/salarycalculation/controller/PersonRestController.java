@@ -7,8 +7,10 @@ import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import com.github.mrak2017.salarycalculation.service.PersonController;
 import com.github.mrak2017.salarycalculation.service.SalaryCalculator;
+import com.github.mrak2017.salarycalculation.utils.DateUtil;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -110,14 +112,16 @@ public class PersonRestController {
 
 	@GetMapping("{id}/salary")
 	BigDecimal calcSalaryOnDate(@PathVariable long id, @RequestParam(required = false) String calcDate) {
-		//TODO
-		return BigDecimal.ZERO;
+		Person person = controller.find(id).orElseThrow(
+				() -> new ValidationException("Person with id " + id + " not found"));
+		LocalDate onDate = DateUtil.parseFromISOString(calcDate);
+		return calculator.getSalaryOnDate(person, onDate);
 	}
 
 	@GetMapping("total-salary")
 	BigDecimal calcTotalSalaryOnDate(@RequestParam(required = false) String calcDate) {
-		//TODO
-		return BigDecimal.ZERO;
+		LocalDate onDate = DateUtil.parseFromISOString(calcDate);
+		return calculator.getTotalSalaryOnDate(onDate);
 	}
 
 	private OrgStructureItemDTO getChildrenOrgStructureDTO(Person person) {
