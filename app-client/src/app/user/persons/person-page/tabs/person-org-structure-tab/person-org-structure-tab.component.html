@@ -25,8 +25,9 @@
         <button type="button"
                 mat-raised-button
                 color="primary"
-                [disabled]="selectedChief && selectedChief.id === (currentChiefId$ | async)"
-                (click)="updateChief()">Изменить руководителя
+                (click)="updateChief()">
+          <span *ngIf="selectedChief == null">Удалить руководителя</span>
+          <span *ngIf="selectedChief != null">Изменить руководителя</span>
         </button>
       </div>
     </div>

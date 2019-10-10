@@ -8,7 +8,7 @@ import java.util.List;
  * Hierarchical DTO for tree-representation
  */
 public class OrgStructureItemDTO {
-	public Long id;
+	public Long personId;
 	public String firstName;
 	public String lastName;
 	public List<OrgStructureItemDTO> children;
@@ -17,7 +17,7 @@ public class OrgStructureItemDTO {
 	}
 
 	public OrgStructureItemDTO(Person person, List<OrgStructureItemDTO> hierarchy) {
-		id = person.getId();
+		personId = person.getId();
 		firstName = person.getFirstName();
 		lastName = person.getLastName();
 		children = hierarchy;

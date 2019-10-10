@@ -19,7 +19,6 @@ import { GroupTypeEnum } from "../../../models/group-type-enum";
 export class PersonOrgStructureTabComponent extends Subscriber implements OnInit {
 
   hasCurrentGroup$: Observable<boolean>;
-  currentChiefId$: Observable<number>;
 
   chiefs$: Observable<ComboBoxItemDTO[]>;
   selectedChief: ComboBoxItemDTO;
@@ -73,16 +72,7 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
   }
 
   private fillChiefsData() {
-    this.currentChiefId$ = this.service.person$.pipe(
-        map(p => CheckUtils.isExists(p.currentChief) ? p.currentChief.id : null),
-        shareReplay(1),
-    );
-
     this.chiefs$ = this.service.getPossibleChiefs();
-
-    const updateSelectedChiefSubscription = this.chiefs$.pipe(withLatestFrom(this.currentChiefId$))
-        .subscribe(([chiefs, id]) => this.selectedChief = chiefs.find(val => val.id === id));
-    this.subscribed(updateSelectedChiefSubscription);
   }
 
   private fillSubordinatesData() {

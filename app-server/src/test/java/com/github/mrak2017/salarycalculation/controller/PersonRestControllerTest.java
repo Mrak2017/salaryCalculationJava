@@ -106,6 +106,9 @@ public class PersonRestControllerTest extends BaseTest {
 	@Test
 	void testGetPerson() throws Exception {
 		Person person = createEmployee();
+		Person manager = createManager();
+
+		controller.updateChief(person.getId(), manager.getId());
 
 		PersonDTO result = getResult(
 				get(REST_PREFIX + person.getId()).contentType("application/json"),
@@ -118,6 +121,8 @@ public class PersonRestControllerTest extends BaseTest {
 		assertEquals(person.getFirstDate(), result.startDate);
 		assertEquals(person.getLastDate(), result.endDate);
 		assertEquals(person.getBaseSalaryPart(), result.baseSalaryPart);
+		assertNotNull(result.currentChief);
+		assertEquals(manager.getId(), result.currentChief.id);
 	}
 
 	@Test
