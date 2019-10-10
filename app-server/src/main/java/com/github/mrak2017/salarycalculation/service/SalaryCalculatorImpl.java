@@ -10,12 +10,30 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 public class SalaryCalculatorImpl implements SalaryCalculator {
+
+    private class SingleSalaryCalcForTotalCallable implements Callable<BigDecimal>{
+
+        private Person person;
+        private LocalDate onDate;
+
+        public SingleSalaryCalcForTotalCallable(Person person, LocalDate onDate) {
+            this.person = person;
+            this.onDate = onDate;
+        }
+
+        @Override
+        public BigDecimal call() throws Exception {
+            return getSalaryOnDate(person, onDate);
+        }
+    }
 
     private final PersonController personController;
 
@@ -25,8 +43,26 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
 
     @Override
     public BigDecimal getTotalSalaryOnDate(LocalDate onDate) {
-        //TODO
-        return BigDecimal.ZERO;
+        //HashMap<Person, BigDecimal> storage = new HashMap<>();
+
+        List<Person> all = personController.findAll("");
+
+        ExecutorService pool = Executors.newFixedThreadPool(3);
+        Set<Future<BigDecimal>> set = new HashSet<Future<BigDecimal>>();
+        for (Person person: all) {
+            Callable<BigDecimal> callable = new SingleSalaryCalcForTotalCallable(person, onDate);
+            Future<BigDecimal> future = pool.submit(callable);
+            set.add(future);
+        }
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Future<BigDecimal> future : set) {
+            try {
+                sum = sum.add(future.get());
+            } catch (Exception e) {
+                throw new ValidationException(e.getMessage());
+            }
+        }
+        return sum;
     }
 
     @Override
