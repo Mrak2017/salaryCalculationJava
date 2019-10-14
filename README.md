@@ -15,10 +15,23 @@
 Реализация задания на C# - https://github.com/Mrak2017/salaryCalculation
 
 #### Запуск:
-- npm i (внутри app-client)
-- ng build (//todo убрать необходимость устанавливать Angular CLI)
-- docker compose up -d
-- зайти на http://localhost:8001
+1) Init and build client application  
+   go to ./app-client  
+   run in console:  
+```
+npm i
+npm run build
+```
+2) Start docker container with test database  
+`docker-compose up -d test-db`
+3) Build java server (in main directory)  
+`gradlew app-server:build`
+   or  
+`./gradlew app-server:build`
+4) Start application  
+`docker-compose up -d`
+5) Open in browser  
+http://localhost:8001
 
 #### Dev-запуск:
 - docker-compose up -d
@@ -26,8 +39,3 @@
 - gradlew app-server:build
 - docker-compose up -d
 - docker-compose stop
-
-#### Запуск тестов (dev-режим):
-- docker-compose up -d test-db
-- запустить нужный тест или пачку тестов
-- docker-compose stop test-db
