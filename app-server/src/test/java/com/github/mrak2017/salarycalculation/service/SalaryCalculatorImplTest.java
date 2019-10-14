@@ -1,6 +1,7 @@
 package com.github.mrak2017.salarycalculation.service;
 
-import com.github.mrak2017.salarycalculation.BaseTest;
+import com.github.mrak2017.salarycalculation.BaseUnitTest;
+import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import org.junit.Before;
@@ -17,24 +18,68 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SalaryCalculatorImplTest extends BaseTest {
-
-    @Mock
-    private PersonController personControllerMock;
+public class SalaryCalculatorImplTest extends BaseUnitTest {
 
     @InjectMocks
     private SalaryCalculatorImpl calculator;
 
+    @Mock
+    private PersonController personControllerMock;
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    private String getStringUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    private Person createPerson(BigDecimal baseSalaryPart, LocalDate startDate) {
+        Person person = new Person();
+        person.setFirstName(getStringUUID());
+        person.setLastName(getStringUUID());
+        person.setBaseSalaryPart(baseSalaryPart);
+        person.setFirstDate(startDate);
+        return person;
+    }
+
+    private Person2Group createGroup(Person person, GroupType groupType) {
+        Person2Group group = new Person2Group();
+        group.setPerson(person);
+        group.setGroupType(groupType);
+        group.setPeriodStart(person.getFirstDate());
+        return group;
+    }
+
+    private Person createPersonWithMock(BigDecimal baseSalaryPart, int yearsCount, LocalDate onDate, GroupType type) {
+        int startYear = LocalDate.now().getYear() - yearsCount + 1;
+        Person person = createPerson(baseSalaryPart, LocalDate.of(startYear, 1, 1));
+        Person2Group group = createGroup(person, type);
+
+        mockGetGroupOnDate(person, onDate, group);
+        return person;
+    }
+
+    private void mockGetGroupOnDate(Person person, LocalDate onDate, Person2Group group) {
+        when(personControllerMock.getGroupOnDate(person, onDate)).thenReturn(Optional.of(group));
+    }
+
+    private void mockGetFirstLevelSubordinates(List<Person> result, Person manager) {
+        doReturn(result).when(personControllerMock).getFirstLevelSubordinates(
+                ArgumentMatchers.argThat(m -> m.getFirstName().equals(manager.getFirstName())));
+    }
+
+    private void mockGetAllSubordinates(List<Person> result, Person salesman) {
+        doReturn(result).when(personControllerMock).getAllSubordinates(
+                ArgumentMatchers.argThat(s -> s.getFirstName().equals(salesman.getFirstName())));
     }
 
     /**
@@ -48,8 +93,9 @@ public class SalaryCalculatorImplTest extends BaseTest {
     void testCalcSalaryOnDateEmployee1Year() {
         BigDecimal baseSalaryPart = BigDecimal.valueOf(100);
         int yearsCount = 1;
+        BigDecimal expectedSalary = BigDecimal.valueOf(103.00);
 
-        checkEmployeeSalary(baseSalaryPart, yearsCount, BigDecimal.valueOf(103.00));
+        checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
 
     /**
@@ -63,8 +109,9 @@ public class SalaryCalculatorImplTest extends BaseTest {
     void testCalcSalaryOnDateEmployee3Years() {
         BigDecimal baseSalaryPart = BigDecimal.valueOf(200);
         int yearsCount = 3;
+        BigDecimal expectedSalary = BigDecimal.valueOf(218.00);
 
-        checkEmployeeSalary(baseSalaryPart, yearsCount, BigDecimal.valueOf(218.00));
+        checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
 
     /**
@@ -78,15 +125,14 @@ public class SalaryCalculatorImplTest extends BaseTest {
     void testCalcSalaryOnDateEmployee11Years() {
         BigDecimal baseSalaryPart = BigDecimal.valueOf(300);
         int yearsCount = 11;
+        BigDecimal expectedSalary = BigDecimal.valueOf(390.00);
 
-        checkEmployeeSalary(baseSalaryPart, yearsCount, BigDecimal.valueOf(390.00));
+        checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
 
     private void checkEmployeeSalary(BigDecimal baseSalaryPart, int yearsCount, BigDecimal expectedSalary) {
-        Person employee = createWithExperience(baseSalaryPart, yearsCount, this::createEmployee);
-
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(employee, onDate);
+        Person employee = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Employee);
 
         BigDecimal salary = calculator.getSalaryOnDate(employee, onDate);
 
@@ -103,10 +149,10 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateManager1Year0Subordinates() {
-        Person manager = createWithExperience(BigDecimal.valueOf(100), 1, this::createManager);
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(100);
+        int yearsCount = 1;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(manager, onDate);
+        Person manager = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Manager);
 
         BigDecimal salary = calculator.getSalaryOnDate(manager, onDate);
 
@@ -123,18 +169,13 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateManager3Years2Subordinates() {
-        Person manager = createWithExperience(BigDecimal.valueOf(200), 3, this::createManager);
-
-        Person subordinate1 = createEmployee();
-        controller.updateChief(subordinate1.getId(), manager.getId());
-
-        Person subordinate2 = createEmployee();
-        controller.updateChief(subordinate2.getId(), manager.getId());
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(200);
+        int yearsCount = 3;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(manager, onDate);
-        mockGetGroupOnDate(subordinate1, onDate);
-        mockGetGroupOnDate(subordinate2, onDate);
+        Person manager = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Manager);
+
+        Person subordinate1 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
+        Person subordinate2 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
 
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate1, subordinate2), manager);
 
@@ -153,10 +194,10 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateManager9Years0Subordinates() {
-        Person manager = createWithExperience(BigDecimal.valueOf(300), 9, this::createManager);
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(300);
+        int yearsCount = 9;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(manager, onDate);
+        Person manager = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Manager);
 
         BigDecimal salary = calculator.getSalaryOnDate(manager, onDate);
 
@@ -173,10 +214,10 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateSalesman1Year0Subordinates() {
-        Person salesman = createWithExperience(BigDecimal.valueOf(100), 1, this::createSalesman);
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(100);
+        int yearsCount = 1;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(salesman, onDate);
+        Person salesman = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Salesman);
 
         BigDecimal salary = calculator.getSalaryOnDate(salesman, onDate);
 
@@ -194,22 +235,14 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateSalesman3Years3Subordinates() {
-        Person salesman = createWithExperience(BigDecimal.valueOf(200), 3, this::createSalesman);
-
-        Person manager = createManager();
-        controller.updateChief(manager.getId(), salesman.getId());
-
-        Person subordinate1 = createEmployee();
-        controller.updateChief(subordinate1.getId(), manager.getId());
-
-        Person subordinate2 = createEmployee();
-        controller.updateChief(subordinate2.getId(), manager.getId());
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(200);
+        int yearsCount = 3;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(salesman, onDate);
-        mockGetGroupOnDate(manager, onDate);
-        mockGetGroupOnDate(subordinate1, onDate);
-        mockGetGroupOnDate(subordinate2, onDate);
+        Person salesman = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Salesman);
+
+        Person manager = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Manager);
+        Person subordinate1 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
+        Person subordinate2 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
 
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate1, subordinate2), manager);
         mockGetAllSubordinates(Arrays.asList(manager, subordinate1, subordinate2), salesman);
@@ -229,10 +262,10 @@ public class SalaryCalculatorImplTest extends BaseTest {
      */
     @Test
     void testCalcSalaryOnDateSalesman36Years0Subordinates() {
-        Person salesman = createWithExperience(BigDecimal.valueOf(300), 36, this::createSalesman);
-
+        BigDecimal baseSalaryPart = BigDecimal.valueOf(300);
+        int yearsCount = 36;
         LocalDate onDate = LocalDate.now();
-        mockGetGroupOnDate(salesman, onDate);
+        Person salesman = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Salesman);
 
         BigDecimal salary = calculator.getSalaryOnDate(salesman, onDate);
 
@@ -255,41 +288,26 @@ public class SalaryCalculatorImplTest extends BaseTest {
     @Test
     void testCalcTotalSalaryOnDate() {
         // 1 Employee (years = 1, base salary part = 100, salary = 103)
-        Person simpleEmployee = createEmployee();
+        Person simpleEmployee = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
 
         // 1 Manager (years = 3, base salary part = 200, salary = 231.03)
         // -- Subordinates:
         // -- 2 Employees (years = 1, base salary part = 100, salary = 103)
-        Person topManager = createWithExperience(BigDecimal.valueOf(200), 3, this::createManager);
-        Person subordinate1 = createEmployee();
-        controller.updateChief(subordinate1.getId(), topManager.getId());
-        Person subordinate2 = createEmployee();
-        controller.updateChief(subordinate2.getId(), topManager.getId());
+        Person topManager = createPersonWithMock(BigDecimal.valueOf(200), 3, LocalDate.now(), GroupType.Manager);
+        Person subordinate1 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
+        Person subordinate2 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
 
         // 1 Salesman (years = 3, base salary part = 200, salary = 206.94)
         // -- Subordinates:
         // -- 1 Manager (years = 1, base salary part = 100, salary = 106.03)
         // 		--- Subordinates:
         //		--- 2 Employees (years = 1, base salary part = 100, salary = 103)
-        Person topSalesman = createWithExperience(BigDecimal.valueOf(200), 3, this::createSalesman);
-        Person subManager = createManager();
-        controller.updateChief(subManager.getId(), topSalesman.getId());
-        Person subordinate3 = createEmployee();
-        controller.updateChief(subordinate3.getId(), subManager.getId());
-        Person subordinate4 = createEmployee();
-        controller.updateChief(subordinate4.getId(), subManager.getId());
+        Person topSalesman = createPersonWithMock(BigDecimal.valueOf(200), 3, LocalDate.now(), GroupType.Salesman);
+        Person subManager = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Manager);
+        Person subordinate3 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
+        Person subordinate4 = createPersonWithMock(BigDecimal.valueOf(100), 1, LocalDate.now(), GroupType.Employee);
 
         LocalDate onDate = LocalDate.now();
-
-        mockGetGroupOnDate(simpleEmployee, onDate);
-        mockGetGroupOnDate(topManager, onDate);
-        mockGetGroupOnDate(subordinate1, onDate);
-        mockGetGroupOnDate(subordinate2, onDate);
-        mockGetGroupOnDate(topSalesman, onDate);
-        mockGetGroupOnDate(subManager, onDate);
-        mockGetGroupOnDate(subordinate3, onDate);
-        mockGetGroupOnDate(subordinate4, onDate);
-
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate1, subordinate2), topManager);
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate3, subordinate4), subManager);
 
@@ -311,24 +329,5 @@ public class SalaryCalculatorImplTest extends BaseTest {
         assertEquals(BigDecimal.valueOf(1059).setScale(2, RoundingMode.HALF_UP), salary);
     }
 
-    private void mockGetGroupOnDate(Person person, LocalDate onDate) {
-        Optional<Person2Group> group = controller.getGroupOnDate(person, onDate);
-        when(personControllerMock.getGroupOnDate(person, onDate)).thenReturn(group);
-    }
-
-    private void mockGetFirstLevelSubordinates(List<Person> result, Person manager) {
-        doReturn(result).when(personControllerMock).getFirstLevelSubordinates(
-                ArgumentMatchers.argThat(m ->m.getId().equals(manager.getId())));
-    }
-
-    private void mockGetAllSubordinates(List<Person> result, Person salesman) {
-        doReturn(result).when(personControllerMock).getAllSubordinates(
-                ArgumentMatchers.argThat(s ->s.getId().equals(salesman.getId())));
-    }
-
-    private Person createWithExperience(BigDecimal baseSalaryPart, int yearsCount, BiFunction<BigDecimal, LocalDate, Person> function) {
-        int startYear = LocalDate.now().getYear() - yearsCount + 1;
-        return function.apply(baseSalaryPart, LocalDate.of(startYear, 1, 1));
-    }
 
 }

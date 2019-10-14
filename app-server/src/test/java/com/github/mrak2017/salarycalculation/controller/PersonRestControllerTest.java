@@ -1,7 +1,7 @@
 package com.github.mrak2017.salarycalculation.controller;
 
 
-import com.github.mrak2017.salarycalculation.BaseTest;
+import com.github.mrak2017.salarycalculation.BaseIntegrationTest;
 import com.github.mrak2017.salarycalculation.controller.dto.ComboboxItemDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.Person2GroupDTO;
 import com.github.mrak2017.salarycalculation.controller.dto.PersonDTO;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class PersonRestControllerTest extends BaseTest {
+public class PersonRestControllerTest extends BaseIntegrationTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -44,8 +44,6 @@ public class PersonRestControllerTest extends BaseTest {
 
 	@Autowired
 	private Person2GroupRepository person2GroupRepository;
-
-
 
 	@Test
 	void testGetForJournal() throws Exception {
