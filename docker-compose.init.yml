@@ -15,18 +15,16 @@ services:
 
   build-container:
     container_name: build-container
-    image: java:openjdk-8-alpine
-    working_dir: /opt/salary
-    entrypoint:
-      - /opt/salary/gradlew
-      - app-server:build
-    volumes:
-      - ./app-server/:/opt/salary/app-server/
-      - ./gradle/:/opt/salary/gradle/
-      - ./gradlew:/opt/salary/gradlew
-      - ./build.gradle:/opt/salary/build.gradle
-      - ./settings.gradle:/opt/salary/settings.gradle
+    build:
+      context: .
+      dockerfile: java-build-docker-file
     depends_on:
       - test-db
-    links:
+
+  ping-test-container:
+    container_name: ping-test-container
+    build:
+      context: .
+      dockerfile: ping-test
+    depends_on:
       - test-db
