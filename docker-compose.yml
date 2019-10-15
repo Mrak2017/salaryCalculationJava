@@ -13,17 +13,6 @@ services:
     ports:
       - 5577:5432
 
-  test-db:
-    image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: salary
-    volumes:
-      - ./pg_db_init.sql:/docker-entrypoint-initdb.d/pg_db_init.sql
-    ports:
-      - 5588:5432
-
   adminer:
     image: adminer
     ports:
@@ -41,6 +30,7 @@ services:
       - app-server
 
   app-server:
+    container_name: prod-container
     image: java:openjdk-8-alpine
     entrypoint:
       - java
