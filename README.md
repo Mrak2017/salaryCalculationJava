@@ -22,9 +22,9 @@ Same application but with C# - https://github.com/Mrak2017/salaryCalculation
 npm i
 npm run build
 ```
-2) Build server application
+2) Build server application  
 `docker-compose -f docker-compose.init.yml build build-container`
-3) Start whole application
+3) Start whole application  
 `docker-compose up -d`
 4) Open in browser  
 http://localhost:8001
