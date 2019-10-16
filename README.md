@@ -1,4 +1,4 @@
-# Приложение для ведения заработной платы (на Java)
+# Salary calculation appliaction (Java)
 + Java 8
     + Spring Boot
     + Spring Data
@@ -12,9 +12,9 @@
 + docker
 + gradle
 
-Реализация задания на C# - https://github.com/Mrak2017/salaryCalculation
+Same application but with C# - https://github.com/Mrak2017/salaryCalculation
 
-#### Запуск:
+#### How to build and start application:
 1) Init and build client application  
    go to ./app-client  
    run in console:  
@@ -22,20 +22,9 @@
 npm i
 npm run build
 ```
-2) Start docker container with test database  
-`docker-compose up -d test-db`
-3) Build java server (in main directory)  
-`gradlew app-server:build`
-   or  
-`./gradlew app-server:build`
-4) Start application  
+2) Build server application
+`docker-compose -f docker-compose.init.yml build build-container`
+3) Start whole application
 `docker-compose up -d`
-5) Open in browser  
+4) Open in browser  
 http://localhost:8001
-
-#### Dev-запуск:
-- docker-compose up -d
-- ng build --watch
-- gradlew app-server:build
-- docker-compose up -d
-- docker-compose stop
