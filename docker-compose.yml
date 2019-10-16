@@ -31,13 +31,11 @@ services:
 
   app-server:
     container_name: prod-container
-    image: java:openjdk-8-alpine
+    image: salarycalculationjava_build-container:latest
     entrypoint:
       - java
       - -jar
-      - /opt/app-server/app-server-0.0.1.jar
-    volumes:
-      - ./app-server/build/libs/app-server-0.0.1.jar:/opt/app-server/app-server-0.0.1.jar
+      - /opt/salary/app-server/build/libs/app-server-0.0.1.jar
     ports:
       - 8080:8080
     depends_on:

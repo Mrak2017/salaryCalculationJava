@@ -5,4 +5,4 @@ COPY build.gradle settings.gradle gradlew $APP_HOME
 COPY gradle $APP_HOME/gradle
 COPY app-server $APP_HOME/app-server
 COPY . .
-RUN ./gradlew app-server:build
+RUN ./gradlew clean test app-server:bootJar
