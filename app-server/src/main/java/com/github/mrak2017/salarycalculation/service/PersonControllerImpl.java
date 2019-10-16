@@ -14,6 +14,7 @@ import com.github.mrak2017.salarycalculation.repository.orgStructure.Organizatio
 import com.github.mrak2017.salarycalculation.repository.person2group.Person2GroupRepository;
 import com.github.mrak2017.salarycalculation.utils.CheckUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PersonControllerImpl implements PersonController {
 
     private final PersonRepository repository;

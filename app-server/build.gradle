@@ -29,6 +29,8 @@ dependencies {
     implementation('org.postgresql:postgresql')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile 'org.mockito:mockito-junit-jupiter:2.19.0'
+    testCompile 'org.mockito:mockito-core:2.19.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

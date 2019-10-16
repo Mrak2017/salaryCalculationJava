@@ -10,7 +10,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,9 +21,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class SalaryCalculatorImplTest extends BaseUnitTest {
 
     @InjectMocks
@@ -69,7 +66,10 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     }
 
     private void mockGetGroupOnDate(Person person, LocalDate onDate, Person2Group group) {
-        when(personControllerMock.getGroupOnDate(person, onDate)).thenReturn(Optional.of(group));
+        doReturn(Optional.of(group)).when(personControllerMock).getGroupOnDate(
+                ArgumentMatchers.argThat(m -> m.getFirstName().equals(person.getFirstName())),
+                ArgumentMatchers.eq(onDate)
+        );
     }
 
     private void mockGetFirstLevelSubordinates(List<Person> result, Person manager) {

@@ -4,6 +4,7 @@ import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Service
+@Transactional
 public class SalaryCalculatorImpl implements SalaryCalculator {
 
     private class SingleSalaryCalcForTotalCallable implements Callable<BigDecimal>{
