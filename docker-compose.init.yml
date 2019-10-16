@@ -18,13 +18,3 @@ services:
     build:
       context: .
       dockerfile: java-build-docker-file
-    depends_on:
-      - test-db
-
-  ping-test-container:
-    container_name: ping-test-container
-    build:
-      context: .
-      dockerfile: ping-test
-    depends_on:
-      - test-db

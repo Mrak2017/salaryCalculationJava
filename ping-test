@@ -1,9 +1,0 @@
-FROM java:openjdk-8-alpine AS TEMP_BUILD_IMAGE
-RUN nc -vz -p 5599 localhost || return 0
-RUN nc -vz -p 5432 localhost || return 0
-RUN nc -vz -p 5599 test-db || return 0
-RUN nc -vz -p 5432 test-db || return 0
-RUN telnet localhost 5432 || return 0
-RUN telnet localhost 5599 || return 0
-RUN telnet test-db 5599 || return 0
-RUN telnet test-db 5432 || return 0
