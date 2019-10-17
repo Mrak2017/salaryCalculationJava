@@ -1,4 +1,4 @@
-# Salary calculation appliaction (Java)
+# Salary calculation application (Java)
 + Java 8
     + Spring Boot
     + Spring Data
@@ -9,7 +9,7 @@
     + Angular Material Design
     + moment.js 
 + PostgreSQL
-+ docker
++ docker-compose
 + gradle
 
 Same application but with C# - https://github.com/Mrak2017/salaryCalculation
