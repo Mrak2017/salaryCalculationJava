@@ -1,8 +1,8 @@
-FROM java:openjdk-8-alpine AS TEMP_BUILD_IMAGE
+FROM openjdk:12 AS TEMP_BUILD_IMAGE
 ENV APP_HOME=/opt/salary/
 WORKDIR $APP_HOME
 COPY build.gradle settings.gradle gradlew $APP_HOME
 COPY gradle $APP_HOME/gradle
 COPY app-server $APP_HOME/app-server
 COPY . .
-RUN ./gradlew clean test app-server:bootJar
+RUN ./gradlew app-server:clean app-server:test app-server:bootJar
