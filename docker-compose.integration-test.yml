@@ -12,9 +12,3 @@ services:
       - ./pg_db_init.sql:/docker-entrypoint-initdb.d/pg_db_init.sql
     ports:
       - 5599:5432
-
-  build-container:
-    container_name: build-container
-    build:
-      context: .
-      dockerfile: java-build-docker-file

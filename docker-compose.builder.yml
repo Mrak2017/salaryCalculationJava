@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  build-app-server:
+    container_name: server-builder
+    build:
+      context: .
+      dockerfile: server-build-dockerfile
+    depends_on:
+      - build-client-server
+
+  build-app-client:
+      container_name: client-builder
+      build:
+        context: .
+        dockerfile: client-build-dockerfile
