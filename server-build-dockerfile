@@ -1,7 +1,15 @@
 FROM openjdk:12 AS TEMP_BUILD_IMAGE
-ENV APP_HOME=/opt/salary/
+ENV APP_HOME=/opt/salary
 WORKDIR $APP_HOME
-COPY build.gradle settings.gradle gradlew $APP_HOME
+COPY build.gradle settings.gradle gradlew $APP_HOME/
 COPY gradle $APP_HOME/gradle
 COPY app-server $APP_HOME/app-server
-RUN ./gradlew app-server:clean test app-server:bootJar
+RUN ./gradlew app-server:clean app-server:bootJar
+
+FROM openjdk:12
+ENV ARTIFACT_NAME=app-server-0.0.1.jar
+ENV APP_HOME=/opt/salary
+WORKDIR $APP_HOME
+COPY --from=TEMP_BUILD_IMAGE $APP_HOME/app-server/build/libs/$ARTIFACT_NAME .
+EXPOSE 8080
+CMD ["java","-jar", $ARTIFACT_NAME]

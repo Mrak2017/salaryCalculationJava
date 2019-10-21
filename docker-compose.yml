@@ -31,13 +31,7 @@ services:
 
   app-server:
     container_name: prod-container
-    image: salarycalculationjava_build-container:latest
-    entrypoint:
-      - java
-      - -jar
-      - /opt/salary/app-server/build/libs/app-server-0.0.1.jar
-    ports:
-      - 8080:8080
+    from: salarycalculationjava_build-app-server:latest
     depends_on:
       - db
     links:

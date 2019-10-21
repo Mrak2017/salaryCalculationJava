@@ -7,11 +7,9 @@ services:
     build:
       context: .
       dockerfile: server-build-dockerfile
-    depends_on:
-      - build-app-client
 
   build-app-client:
-      container_name: client-builder
-      build:
-        context: .
-        dockerfile: client-build-dockerfile
+    container_name: client-builder
+    build:
+      context: .
+      dockerfile: client-build-dockerfile
