@@ -9,7 +9,7 @@
     + Angular Material Design
     + moment.js 
 + PostgreSQL
-+ docker-compose
++ docker-compose (+ multi-stage)
 + gradle
 
 Same application but with C# - https://github.com/Mrak2017/salaryCalculation
