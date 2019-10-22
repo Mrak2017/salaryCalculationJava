@@ -29,6 +29,7 @@ dependencies {
     implementation('org.postgresql:postgresql')
 
     compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.liquibase:liquibase-core")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile 'org.mockito:mockito-junit-jupiter:2.19.0'

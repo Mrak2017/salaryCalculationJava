@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet id="create table sc_configuration" author="m.pavlov" >
+        <createTable tableName="sc_configuration">
+            <!-- BaseEntity fields START -->
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sc_configuration_id_pk"/>
+            </column>
+            <column name="insert_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <!-- BaseEntity fields FINISH -->
+            <column name="code" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="value" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(1000)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
