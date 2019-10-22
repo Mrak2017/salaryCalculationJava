@@ -10,6 +10,6 @@ FROM openjdk:12
 ENV ARTIFACT_NAME=app-server-0.0.1.jar
 ENV APP_HOME=/opt/salary
 WORKDIR $APP_HOME
-COPY --from=TEMP_BUILD_IMAGE $APP_HOME/app-server/build/libs/$ARTIFACT_NAME .
+COPY --from=TEMP_BUILD_IMAGE $APP_HOME/app-server/build/libs/$ARTIFACT_NAME $APP_HOME/
 EXPOSE 8080
-CMD ["java","-jar", $ARTIFACT_NAME]
+CMD java -jar $APP_HOME/$ARTIFACT_NAME

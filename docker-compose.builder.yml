@@ -2,13 +2,13 @@ version: '3.1'
 
 services:
 
-  build-app-server:
+  app-server:
     container_name: server-builder
     build:
       context: .
       dockerfile: server-build-dockerfile
 
-  build-app-client:
+  app-client:
     container_name: client-builder
     build:
       context: .

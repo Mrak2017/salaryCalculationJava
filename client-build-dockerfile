@@ -1,14 +1,12 @@
 FROM node:12.12.0-alpine AS TEMP_BUILD_IMAGE
-ENV APP_HOME=/opt/salary/
+ENV APP_HOME=/opt/app-client/
 WORKDIR $APP_HOME
 COPY app-client $APP_HOME/
 RUN npm i
 RUN npm run build
 
 FROM nginx
-ENV APP_HOME=/opt/salary/
+ENV APP_HOME=/opt/app-client/
 WORKDIR $APP_HOME
-COPY --from=TEMP_BUILD_IMAGE $APP_HOME/build .
 COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 443
-EXPOSE 80:8001
+COPY --from=TEMP_BUILD_IMAGE $APP_HOME/build/ .
