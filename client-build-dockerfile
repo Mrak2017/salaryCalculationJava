@@ -1,8 +1,9 @@
 FROM node:12.12.0-alpine AS TEMP_BUILD_IMAGE
 ENV APP_HOME=/opt/app-client/
 WORKDIR $APP_HOME
-COPY app-client $APP_HOME/
+COPY app-client/package.json $APP_HOME/package.json
 RUN npm i
+COPY app-client $APP_HOME/
 RUN npm run build
 
 FROM nginx
