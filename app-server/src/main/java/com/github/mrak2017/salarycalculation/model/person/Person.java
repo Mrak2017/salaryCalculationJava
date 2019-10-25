@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,35 +20,37 @@ import java.util.Set;
 @Table(name = "sc_person")
 public class Person extends BaseEntity {
 
-    @Column
+    @Column(name = "first_name")
+    @Size(max = 100)
     @NotNull
     private String firstName;
 
-    @Column
+    @Column(name = "last_name")
+    @Size(max = 100)
     @NotNull
     private String lastName;
 
     /**
      * of employment
      */
-    @Column
+    @Column(name = "first_date")
     @NotNull
     private LocalDate firstDate;
 
     /**
      * of employment
      */
-    @Column
+    @Column(name = "last_date")
     private LocalDate lastDate;
 
     /**
      * per month
      */
-    @Column
+    @Column(name = "base_salary_part")
     @Digits(integer = 10, fraction = 4)
     private BigDecimal baseSalaryPart;
 
-    @OneToMany(mappedBy="person")
+    @OneToMany(mappedBy = "person")
     private Set<Person2Group> groups;
 
     public String getFirstName() {

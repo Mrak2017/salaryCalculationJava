@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet id="create table sc_configuration" author="m.pavlov" >
         <createTable tableName="sc_configuration">
             <!-- BaseEntity fields START -->
             <column name="id" autoIncrement="true" type="bigint">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sc_configuration_id_pk"/>
             </column>
-            <column name="insert_date" type="datetime">
+            <column name="insert_date" type="datetime" defaultValueComputed="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="update_date" type="datetime">
+            <column name="update_date" type="datetime" defaultValueComputed="now()">
                 <constraints nullable="false"/>
             </column>
             <!-- BaseEntity fields FINISH -->
@@ -26,4 +26,33 @@
             <column name="description" type="varchar(1000)"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="create table sc_person" author="m.pavlov" >
+        <createTable tableName="sc_person">
+            <!-- BaseEntity fields START -->
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sc_person_id_pk"/>
+            </column>
+            <column name="insert_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <!-- BaseEntity fields FINISH -->
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_date" type="datetime"/>
+            <column name="base_salary_part" type="numeric"/>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>

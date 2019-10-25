@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
 
-  prod-db:
+  db:
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -28,6 +28,6 @@ services:
     container_name: prod-container
     image: salarycalculationjava_app-server:latest
     depends_on:
-      - prod-db
+      - db
     links:
-      - prod-db
+      - db
