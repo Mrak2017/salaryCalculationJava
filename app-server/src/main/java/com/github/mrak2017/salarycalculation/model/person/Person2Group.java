@@ -18,16 +18,16 @@ public class Person2Group extends BaseEntity {
     @NotNull
     private Person person;
 
-    @Column
+    @Column(name = "group_type")
     @Enumerated(EnumType.STRING)
     @NotNull
     private GroupType groupType;
 
-    @Column
+    @Column(name = "period_start")
     @NotNull
     private LocalDate periodStart;
 
-    @Column
+    @Column(name = "period_end")
     private LocalDate periodEnd;
 
     public Person getPerson() {

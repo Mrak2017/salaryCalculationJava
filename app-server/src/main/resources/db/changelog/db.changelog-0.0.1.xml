@@ -54,5 +54,26 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="create table sc_person2group" author="m.pavlov" >
+        <createTable tableName="sc_person2group">
+            <!-- BaseEntity fields START -->
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sc_person2group_id_pk"/>
+            </column>
+            <column name="insert_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <!-- BaseEntity fields FINISH -->
+            <column name="person_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_sc_person2group_sc_person" references="sc_person(id)"/>
+            </column>
+            <column name="group_type" type="varchar(50)"/>
+            <column name="period_start" type="datetime"/>
+            <column name="period_end" type="datetime"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
