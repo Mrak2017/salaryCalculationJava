@@ -23,6 +23,8 @@ services:
     ports:
       - 8001:80
       - 443:443
+    depends_on:
+      - app-server
 
   app-server:
     container_name: prod-container

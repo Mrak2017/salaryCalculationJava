@@ -29,7 +29,7 @@ public class OrganizationStructure extends BaseEntity {
     @OneToMany(mappedBy = "parentStructure", fetch = FetchType.LAZY)
     private List<OrganizationStructure> subordinates;
 
-    @Column(columnDefinition = "ltree")
+    @Column(columnDefinition = "ltree", name = "materialized_path")
     @Type(type = "com.github.mrak2017.salarycalculation.model.customtypes.LTreeType")
     private String materializedPath;
 

@@ -46,10 +46,10 @@
             <column name="last_name" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="first_date" type="datetime">
+            <column name="first_date" type="date">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_date" type="datetime"/>
+            <column name="last_date" type="date"/>
             <column name="base_salary_part" type="numeric"/>
         </createTable>
     </changeSet>
@@ -67,13 +67,36 @@
                 <constraints nullable="false"/>
             </column>
             <!-- BaseEntity fields FINISH -->
-            <column name="person_id" type="int">
+            <column name="person_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_sc_person2group_sc_person" references="sc_person(id)"/>
             </column>
             <column name="group_type" type="varchar(50)"/>
-            <column name="period_start" type="datetime"/>
-            <column name="period_end" type="datetime"/>
+            <column name="period_start" type="date"/>
+            <column name="period_end" type="date"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="create table sc_organization_structure" author="m.pavlov" >
+        <createTable tableName="sc_organization_structure">
+            <!-- BaseEntity fields START -->
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sc_organization_structure_id_pk"/>
+            </column>
+            <column name="insert_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <!-- BaseEntity fields FINISH -->
+            <column name="person_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_sc_organization_structure_sc_person" references="sc_person(id)"/>
+            </column>
+            <column name="parent_structure_id" type="bigint">
+                <constraints foreignKeyName="fk_sc_org_struct_sc_org_struct_parent" references="sc_organization_structure(id)"/>
+            </column>
+        </createTable>
+        <sql> ALTER TABLE sc_organization_structure ADD COLUMN materialized_path ltree;</sql>
     </changeSet>
 
 </databaseChangeLog>

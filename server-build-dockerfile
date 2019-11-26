@@ -6,7 +6,7 @@ COPY gradle $APP_HOME/gradle
 # caching gradle dependencies
 RUN ./gradlew build || 0
 COPY app-server $APP_HOME/app-server
-RUN ./gradlew app-server:clean app-server:bootJar
+RUN ./gradlew app-server:clean app-server:test app-server:bootJar
 
 FROM openjdk:12
 ENV ARTIFACT_NAME=app-server-0.0.1.jar
