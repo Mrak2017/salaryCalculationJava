@@ -95,8 +95,11 @@
             <column name="parent_structure_id" type="bigint">
                 <constraints foreignKeyName="fk_sc_org_struct_sc_org_struct_parent" references="sc_organization_structure(id)"/>
             </column>
+            <column name="materialized_path" type="LTREE_TYPE"/>
         </createTable>
-        <sql> ALTER TABLE sc_organization_structure ADD COLUMN materialized_path ltree;</sql>
+        <modifySql dbms="postgresql">
+            <replace replace="LTREE_TYPE" with="ltree" />
+        </modifySql>
     </changeSet>
 
 </databaseChangeLog>
