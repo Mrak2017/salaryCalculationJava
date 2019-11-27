@@ -4,13 +4,14 @@
     + Spring Data
     + Embeded Tomcat
     + Hibernate
-+ Angular v7 
+    + Liquibase
++ Angular 7 
     + RxJS
     + Angular Material Design
-    + moment.js 
-+ PostgreSQL
+    + moment.js
++ PostgreSQL 12.1
 + docker-compose (+ multi-stage)
-+ gradle
++ gradle 5.0
 
 Same application but with C# - https://github.com/Mrak2017/salaryCalculation
 
