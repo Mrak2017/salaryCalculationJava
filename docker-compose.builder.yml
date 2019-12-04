@@ -6,10 +6,10 @@ services:
     container_name: server-builder
     build:
       context: .
-      dockerfile: server-build-dockerfile
+      dockerfile: build-server-dockerfile
 
   app-client:
     container_name: client-builder
     build:
       context: .
-      dockerfile: client-build-dockerfile
+      dockerfile: build-client-dockerfile

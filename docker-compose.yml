@@ -17,6 +17,7 @@ services:
       - 5400:8080
 
   nginx:
+    container_name: client
     image: salarycalculationjava_app-client:latest
     ports:
       - 8001:80
@@ -25,7 +26,7 @@ services:
       - app-server
 
   app-server:
-    container_name: prod-container
+    container_name: server
     image: salarycalculationjava_app-server:latest
     depends_on:
       - db

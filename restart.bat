@@ -1,1 +1,0 @@
-docker-compose stop && gradlew :app-server:build && docker-compose up -d
