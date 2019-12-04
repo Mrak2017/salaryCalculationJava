@@ -26,21 +26,23 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
         private Person person;
         private LocalDate onDate;
 
-        public SingleSalaryCalcForTotalCallable(Person person, LocalDate onDate) {
+        SingleSalaryCalcForTotalCallable(Person person, LocalDate onDate) {
             this.person = person;
             this.onDate = onDate;
         }
 
         @Override
-        public BigDecimal call() throws Exception {
+        public BigDecimal call() {
             return getSalaryOnDate(person, onDate);
         }
     }
 
     private final PersonController personController;
+    private final ConfigurationController configurationController;
 
-    public SalaryCalculatorImpl(PersonController personController) {
+    public SalaryCalculatorImpl(PersonController personController, ConfigurationController configurationController) {
         this.personController = personController;
+        this.configurationController = configurationController;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
 
         final int NUMBER_OF_THREADS = 3;
         ExecutorService pool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-        Set<Future<BigDecimal>> set = new HashSet<Future<BigDecimal>>();
+        Set<Future<BigDecimal>> set = new HashSet<>();
         for (Person person: all) {
             Callable<BigDecimal> callable = new SingleSalaryCalcForTotalCallable(person, onDate);
             Future<BigDecimal> future = pool.submit(callable);
@@ -69,7 +71,7 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
     @Override
     public BigDecimal getSalaryOnDate(Person person, LocalDate onDate) {
         Optional<Person2Group> group = personController.getGroupOnDate(person, onDate);
-        if (!group.isPresent() || group.get().getPerson().getBaseSalaryPart() == null) {
+        if (group.isEmpty() || group.get().getPerson().getBaseSalaryPart() == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal baseSalaryPart = group.get().getPerson().getBaseSalaryPart();
@@ -98,35 +100,11 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
     }
 
     private BigDecimal getWorkExperienceRatio(GroupType groupType) {
-        switch (groupType) {
-            case Employee:
-                return BigDecimal.valueOf(0.03);
-
-            case Manager:
-                return BigDecimal.valueOf(0.05);
-
-            case Salesman:
-                return BigDecimal.valueOf(0.01);
-
-            default:
-                throw new ValidationException("Unknown GroupType " + groupType);
-        }
+        return configurationController.getOrDefault(groupType.workExperienceRatioSetting, BigDecimal.ZERO);
     }
 
     private BigDecimal getMaxWorkExperienceRatio(GroupType groupType) {
-        switch (groupType) {
-            case Employee:
-                return BigDecimal.valueOf(0.3);
-
-            case Manager:
-                return BigDecimal.valueOf(0.4);
-
-            case Salesman:
-                return BigDecimal.valueOf(0.35);
-
-            default:
-                throw new ValidationException("Unknown GroupType " + groupType);
-        }
+        return configurationController.getOrDefault(groupType.maxWorkExperienceRatioSetting, BigDecimal.ZERO);
     }
 
     /**
@@ -159,18 +137,10 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
     }
 
     private BigDecimal getSubordinatesRatio(GroupType groupType) {
-        switch (groupType) {
-            case Employee:
-                return BigDecimal.ZERO;
-
-            case Manager:
-                return BigDecimal.valueOf(0.005);
-
-            case Salesman:
-                return BigDecimal.valueOf(0.003);
-
-            default:
-                throw new ValidationException("Unknown GroupType " + groupType);
+        if (groupType.subordinatesRatioSetting != null) {
+            return configurationController.getOrDefault(groupType.subordinatesRatioSetting, BigDecimal.ZERO);
+        } else {
+            return BigDecimal.ZERO;
         }
     }
 

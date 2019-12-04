@@ -30,9 +30,26 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     @Mock
     private PersonController personControllerMock;
 
+    @Mock
+    private ConfigurationController configurationControllerMock;
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
+        initConfiguration();
+    }
+
+    private void initConfiguration() {
+        mockConfigurationGetOrDefault(GroupType.Employee.workExperienceRatioSetting, 0.03);
+        mockConfigurationGetOrDefault(GroupType.Manager.workExperienceRatioSetting, 0.05);
+        mockConfigurationGetOrDefault(GroupType.Salesman.workExperienceRatioSetting, 0.01);
+
+        mockConfigurationGetOrDefault(GroupType.Employee.maxWorkExperienceRatioSetting, 0.3);
+        mockConfigurationGetOrDefault(GroupType.Manager.maxWorkExperienceRatioSetting, 0.4);
+        mockConfigurationGetOrDefault(GroupType.Salesman.maxWorkExperienceRatioSetting,0.35);
+
+        mockConfigurationGetOrDefault(GroupType.Manager.subordinatesRatioSetting, 0.005);
+        mockConfigurationGetOrDefault(GroupType.Salesman.subordinatesRatioSetting,0.003);
     }
 
     private String getStringUUID() {
@@ -80,6 +97,12 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     private void mockGetAllSubordinates(List<Person> result, Person salesman) {
         doReturn(result).when(personControllerMock).getAllSubordinates(
                 ArgumentMatchers.argThat(s -> s.getFirstName().equals(salesman.getFirstName())));
+    }
+
+    private void mockConfigurationGetOrDefault(String code, double value) {
+        BigDecimal result = BigDecimal.valueOf(value);
+        doReturn(result).when(configurationControllerMock).getOrDefault(
+                ArgumentMatchers.argThat(e -> e.equals(code)), ArgumentMatchers.any());
     }
 
     /**

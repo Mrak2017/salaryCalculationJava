@@ -108,4 +108,48 @@
         </modifySql>
     </changeSet>
 
+    <changeSet id="fill initial sc_configuration" author="m.pavlov">
+        <insert tableName="sc_configuration">
+            <column name="Code">EmployeeWorkExperienceRatio</column>
+            <column name="Value">0.03</column>
+            <column name="Description">Employee work experience ratio</column>
+        </insert>
+        <insert tableName="sc_configuration">
+            <column name="Code">ManagerWorkExperienceRatio</column>
+            <column name="Value">0.05</column>
+            <column name="Description">Manager work experience ratio</column>
+        </insert>
+        <insert tableName="sc_configuration">
+            <column name="Code">SalesmanWorkExperienceRatio</column>
+            <column name="Value">0.01</column>
+            <column name="Description">Salesman work experience ratio</column>
+        </insert>
+
+        <insert tableName="sc_configuration">
+            <column name="Code">EmployeeMaxWorkExperienceRatio</column>
+            <column name="Value">0.3</column>
+            <column name="Description">Employee max work experience ratio</column>
+        </insert>
+        <insert tableName="sc_configuration">
+            <column name="Code">ManagerMaxWorkExperienceRatio</column>
+            <column name="Value">0.4</column>
+            <column name="Description">Manager max work experience ratio</column>
+        </insert>
+        <insert tableName="sc_configuration">
+            <column name="Code">SalesmanMaxWorkExperienceRatio</column>
+            <column name="Value">0.35</column>
+            <column name="Description">Salesman max work experience ratio</column>
+        </insert>
+
+        <insert tableName="sc_configuration">
+            <column name="Code">ManagerSubordinatesRatio</column>
+            <column name="Value">0.005</column>
+            <column name="Description">Manager subordinates ratio</column>
+        </insert>
+        <insert tableName="sc_configuration">
+            <column name="Code">SalesmanSubordinatesRatio</column>
+            <column name="Value">0.003</column>
+            <column name="Description">Salesman subordinates ratio</column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
