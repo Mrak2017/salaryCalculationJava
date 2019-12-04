@@ -36,19 +36,22 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        initConfiguration();
     }
 
-    private void initConfiguration() {
+    private void initEmployeeConfiguration() {
         mockConfigurationGetOrDefault(GroupType.Employee.workExperienceRatioSetting, 0.03);
-        mockConfigurationGetOrDefault(GroupType.Manager.workExperienceRatioSetting, 0.05);
-        mockConfigurationGetOrDefault(GroupType.Salesman.workExperienceRatioSetting, 0.01);
-
         mockConfigurationGetOrDefault(GroupType.Employee.maxWorkExperienceRatioSetting, 0.3);
-        mockConfigurationGetOrDefault(GroupType.Manager.maxWorkExperienceRatioSetting, 0.4);
-        mockConfigurationGetOrDefault(GroupType.Salesman.maxWorkExperienceRatioSetting,0.35);
+    }
 
+    private void initManagerConfiguration() {
+        mockConfigurationGetOrDefault(GroupType.Manager.workExperienceRatioSetting, 0.05);
+        mockConfigurationGetOrDefault(GroupType.Manager.maxWorkExperienceRatioSetting, 0.4);
         mockConfigurationGetOrDefault(GroupType.Manager.subordinatesRatioSetting, 0.005);
+    }
+
+    private void initSalesmanConfiguration() {
+        mockConfigurationGetOrDefault(GroupType.Salesman.workExperienceRatioSetting, 0.01);
+        mockConfigurationGetOrDefault(GroupType.Salesman.maxWorkExperienceRatioSetting,0.35);
         mockConfigurationGetOrDefault(GroupType.Salesman.subordinatesRatioSetting,0.003);
     }
 
@@ -102,7 +105,7 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     private void mockConfigurationGetOrDefault(String code, double value) {
         BigDecimal result = BigDecimal.valueOf(value);
         doReturn(result).when(configurationControllerMock).getOrDefault(
-                ArgumentMatchers.argThat(e -> e.equals(code)), ArgumentMatchers.any());
+                ArgumentMatchers.eq(code), ArgumentMatchers.any());
     }
 
     /**
@@ -117,6 +120,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         BigDecimal baseSalaryPart = BigDecimal.valueOf(100);
         int yearsCount = 1;
         BigDecimal expectedSalary = BigDecimal.valueOf(103.00);
+
+        initEmployeeConfiguration();
 
         checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
@@ -134,6 +139,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         int yearsCount = 3;
         BigDecimal expectedSalary = BigDecimal.valueOf(218.00);
 
+        initEmployeeConfiguration();
+
         checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
 
@@ -149,6 +156,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         BigDecimal baseSalaryPart = BigDecimal.valueOf(300);
         int yearsCount = 11;
         BigDecimal expectedSalary = BigDecimal.valueOf(390.00);
+
+        initEmployeeConfiguration();
 
         checkEmployeeSalary(baseSalaryPart, yearsCount, expectedSalary);
     }
@@ -177,6 +186,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         LocalDate onDate = LocalDate.now();
         Person manager = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Manager);
 
+        initManagerConfiguration();
+
         BigDecimal salary = calculator.getSalaryOnDate(manager, onDate);
 
         assertEquals(BigDecimal.valueOf(105.00).setScale(2, RoundingMode.HALF_UP), salary);
@@ -202,6 +213,9 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
 
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate1, subordinate2), manager);
 
+        initEmployeeConfiguration();
+        initManagerConfiguration();
+
         BigDecimal salary = calculator.getSalaryOnDate(manager, onDate);
 
         assertEquals(BigDecimal.valueOf(231.03).setScale(2, RoundingMode.HALF_UP), salary);
@@ -222,6 +236,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         LocalDate onDate = LocalDate.now();
         Person manager = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Manager);
 
+        initManagerConfiguration();
+
         BigDecimal salary = calculator.getSalaryOnDate(manager, onDate);
 
         assertEquals(BigDecimal.valueOf(420).setScale(2, RoundingMode.HALF_UP), salary);
@@ -241,6 +257,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         int yearsCount = 1;
         LocalDate onDate = LocalDate.now();
         Person salesman = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Salesman);
+
+        initSalesmanConfiguration();
 
         BigDecimal salary = calculator.getSalaryOnDate(salesman, onDate);
 
@@ -270,6 +288,10 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         mockGetFirstLevelSubordinates(Arrays.asList(subordinate1, subordinate2), manager);
         mockGetAllSubordinates(Arrays.asList(manager, subordinate1, subordinate2), salesman);
 
+        initEmployeeConfiguration();
+        initManagerConfiguration();
+        initSalesmanConfiguration();
+
         BigDecimal salary = calculator.getSalaryOnDate(salesman, onDate);
 
         assertEquals(BigDecimal.valueOf(206.94).setScale(2, RoundingMode.HALF_UP), salary);
@@ -289,6 +311,8 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
         int yearsCount = 36;
         LocalDate onDate = LocalDate.now();
         Person salesman = createPersonWithMock(baseSalaryPart, yearsCount, onDate, GroupType.Salesman);
+
+        initSalesmanConfiguration();
 
         BigDecimal salary = calculator.getSalaryOnDate(salesman, onDate);
 
@@ -347,6 +371,10 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
                 subordinate4
         );
         doReturn(all).when(personControllerMock).findAll(ArgumentMatchers.anyString());
+
+        initEmployeeConfiguration();
+        initManagerConfiguration();
+        initSalesmanConfiguration();
 
         BigDecimal salary = calculator.getTotalSalaryOnDate(onDate);
         assertEquals(BigDecimal.valueOf(1059).setScale(2, RoundingMode.HALF_UP), salary);
