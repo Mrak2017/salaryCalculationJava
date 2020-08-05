@@ -28,10 +28,10 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     private SalaryCalculatorImpl calculator;
 
     @Mock
-    private PersonController personControllerMock;
+    private PersonService personServiceMock;
 
     @Mock
-    private ConfigurationController configurationControllerMock;
+    private ConfigurationService configurationServiceMock;
 
     @Before
     public void init() {
@@ -86,25 +86,25 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
     }
 
     private void mockGetGroupOnDate(Person person, LocalDate onDate, Person2Group group) {
-        doReturn(Optional.of(group)).when(personControllerMock).getGroupOnDate(
+        doReturn(Optional.of(group)).when(personServiceMock).getGroupOnDate(
                 ArgumentMatchers.argThat(m -> m.getFirstName().equals(person.getFirstName())),
                 ArgumentMatchers.eq(onDate)
         );
     }
 
     private void mockGetFirstLevelSubordinates(List<Person> result, Person manager) {
-        doReturn(result).when(personControllerMock).getFirstLevelSubordinates(
+        doReturn(result).when(personServiceMock).getFirstLevelSubordinates(
                 ArgumentMatchers.argThat(m -> m.getFirstName().equals(manager.getFirstName())));
     }
 
     private void mockGetAllSubordinates(List<Person> result, Person salesman) {
-        doReturn(result).when(personControllerMock).getAllSubordinates(
+        doReturn(result).when(personServiceMock).getAllSubordinates(
                 ArgumentMatchers.argThat(s -> s.getFirstName().equals(salesman.getFirstName())));
     }
 
     private void mockConfigurationGetOrDefault(String code, double value) {
         BigDecimal result = BigDecimal.valueOf(value);
-        doReturn(result).when(configurationControllerMock).getOrDefault(
+        doReturn(result).when(configurationServiceMock).getOrDefault(
                 ArgumentMatchers.eq(code), ArgumentMatchers.any());
     }
 
@@ -370,7 +370,7 @@ public class SalaryCalculatorImplTest extends BaseUnitTest {
                 subordinate3,
                 subordinate4
         );
-        doReturn(all).when(personControllerMock).findAll(ArgumentMatchers.anyString());
+        doReturn(all).when(personServiceMock).findAll(ArgumentMatchers.anyString());
 
         initEmployeeConfiguration();
         initManagerConfiguration();

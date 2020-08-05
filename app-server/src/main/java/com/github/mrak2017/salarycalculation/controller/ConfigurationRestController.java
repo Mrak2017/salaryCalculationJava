@@ -2,7 +2,7 @@ package com.github.mrak2017.salarycalculation.controller;
 
 import com.github.mrak2017.salarycalculation.controller.dto.ConfigurationJournalDTO;
 import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundException;
-import com.github.mrak2017.salarycalculation.service.ConfigurationController;
+import com.github.mrak2017.salarycalculation.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ConfigurationRestController {
 
 	@Autowired
-	private ConfigurationController controller;
+	private ConfigurationService controller;
 
 	@GetMapping("journal")
 	List<ConfigurationJournalDTO> getForJournal() {

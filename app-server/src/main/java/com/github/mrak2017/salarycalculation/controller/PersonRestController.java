@@ -5,7 +5,7 @@ import com.github.mrak2017.salarycalculation.core.Exception.ResourceNotFoundExce
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.model.person.Person2Group;
-import com.github.mrak2017.salarycalculation.service.PersonController;
+import com.github.mrak2017.salarycalculation.service.PersonService;
 import com.github.mrak2017.salarycalculation.service.SalaryCalculator;
 import com.github.mrak2017.salarycalculation.utils.DateUtil;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 @RequestMapping("api/persons/")
 public class PersonRestController {
 
-	private final PersonController controller;
+	private final PersonService controller;
 
 	private final SalaryCalculator calculator;
 
-	public PersonRestController(PersonController controller, SalaryCalculator calculator) {
+	public PersonRestController(PersonService controller, SalaryCalculator calculator) {
 		this.controller = controller;
 		this.calculator = calculator;
 	}

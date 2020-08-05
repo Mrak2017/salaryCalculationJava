@@ -4,3 +4,4 @@
 /app-server/build
 /app-client/.gradle
 /app-client/package-lock.json
+/app-client/build

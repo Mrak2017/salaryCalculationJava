@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ConfigurationControllerImpl implements ConfigurationController {
+public class ConfigurationServiceImpl implements ConfigurationService {
 
 	private final ConfigurationRepository repository;
 
-	ConfigurationControllerImpl(ConfigurationRepository repository) {
+	ConfigurationServiceImpl(ConfigurationRepository repository) {
 		this.repository = repository;
 	}
 

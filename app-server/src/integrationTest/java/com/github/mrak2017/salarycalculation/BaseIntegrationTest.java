@@ -5,7 +5,7 @@ import com.github.mrak2017.salarycalculation.controller.dto.PersonJournalDTO;
 import com.github.mrak2017.salarycalculation.model.person.GroupType;
 import com.github.mrak2017.salarycalculation.model.person.Person;
 import com.github.mrak2017.salarycalculation.repository.orgStructure.OrganizationStructureRepository;
-import com.github.mrak2017.salarycalculation.service.PersonController;
+import com.github.mrak2017.salarycalculation.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +33,7 @@ public class BaseIntegrationTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    protected PersonController controller;
+    protected PersonService controller;
 
     @Autowired
     protected OrganizationStructureRepository orgStructureRepository;

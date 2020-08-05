@@ -17,14 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class PersonControllerImpl implements PersonController {
+public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository repository;
 
@@ -32,8 +31,8 @@ public class PersonControllerImpl implements PersonController {
 
     private final OrganizationStructureRepository orgStructureRep;
 
-    PersonControllerImpl(PersonRepository repository, Person2GroupRepository groupRepository,
-                         OrganizationStructureRepository orgStructureRep) {
+    PersonServiceImpl(PersonRepository repository, Person2GroupRepository groupRepository,
+                      OrganizationStructureRepository orgStructureRep) {
         this.repository = repository;
         this.groupRepository = groupRepository;
         this.orgStructureRep = orgStructureRep;

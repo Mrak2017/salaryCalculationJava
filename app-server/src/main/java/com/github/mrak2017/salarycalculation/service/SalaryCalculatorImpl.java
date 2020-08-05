@@ -37,17 +37,17 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
         }
     }
 
-    private final PersonController personController;
-    private final ConfigurationController configurationController;
+    private final PersonService personService;
+    private final ConfigurationService configurationService;
 
-    public SalaryCalculatorImpl(PersonController personController, ConfigurationController configurationController) {
-        this.personController = personController;
-        this.configurationController = configurationController;
+    public SalaryCalculatorImpl(PersonService personService, ConfigurationService configurationService) {
+        this.personService = personService;
+        this.configurationService = configurationService;
     }
 
     @Override
     public BigDecimal getTotalSalaryOnDate(LocalDate onDate) {
-        List<Person> all = personController.findAll("");
+        List<Person> all = personService.findAll("");
 
         final int NUMBER_OF_THREADS = 3;
         ExecutorService pool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -70,7 +70,7 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
 
     @Override
     public BigDecimal getSalaryOnDate(Person person, LocalDate onDate) {
-        Optional<Person2Group> group = personController.getGroupOnDate(person, onDate);
+        Optional<Person2Group> group = personService.getGroupOnDate(person, onDate);
         if (group.isEmpty() || group.get().getPerson().getBaseSalaryPart() == null) {
             return BigDecimal.ZERO;
         }
@@ -100,11 +100,11 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
     }
 
     private BigDecimal getWorkExperienceRatio(GroupType groupType) {
-        return configurationController.getOrDefault(groupType.workExperienceRatioSetting, BigDecimal.ZERO);
+        return configurationService.getOrDefault(groupType.workExperienceRatioSetting, BigDecimal.ZERO);
     }
 
     private BigDecimal getMaxWorkExperienceRatio(GroupType groupType) {
-        return configurationController.getOrDefault(groupType.maxWorkExperienceRatioSetting, BigDecimal.ZERO);
+        return configurationService.getOrDefault(groupType.maxWorkExperienceRatioSetting, BigDecimal.ZERO);
     }
 
     /**
@@ -126,10 +126,10 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
                 return Collections.emptyList();
 
             case Manager:
-                return personController.getFirstLevelSubordinates(person);
+                return personService.getFirstLevelSubordinates(person);
 
             case Salesman:
-                return personController.getAllSubordinates(person);
+                return personService.getAllSubordinates(person);
 
             default:
                 throw new ValidationException("Unknown GroupType " + groupType);
@@ -138,7 +138,7 @@ public class SalaryCalculatorImpl implements SalaryCalculator {
 
     private BigDecimal getSubordinatesRatio(GroupType groupType) {
         if (groupType.subordinatesRatioSetting != null) {
-            return configurationController.getOrDefault(groupType.subordinatesRatioSetting, BigDecimal.ZERO);
+            return configurationService.getOrDefault(groupType.subordinatesRatioSetting, BigDecimal.ZERO);
         } else {
             return BigDecimal.ZERO;
         }
